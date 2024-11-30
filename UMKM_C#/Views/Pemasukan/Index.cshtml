@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "Pemasukan Harian";
+    ViewData["Header"] = "Pemasukan Harian";
+}
+@model Pemasukan_harian
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-end">
+                    <a asp-controller="pemasukan" asp-action="tambah" class=" btn btn-primary btn-round ms-auto">
+                        <i class="fa fa-plus"></i>
+                        Tambah
+                    </a>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Total Pemasukan</th>
+                                <th scope="col">Tanggal</th>
+                                <th scope="col">Handle</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(Model != null)
+                            {
+                                <tr>
+                                    <td>1</td>
+                                    <td>@Model.Total</td>
+                                    <td>@Model.Created_at</td>
+                                    <td>
+                                        <div class="form-button-action">
+                                            <a href="/pemasukan/edit/@Model.Id" class="btn btn-link btn-primary btn-lg">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center">Belum memasukkan input</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

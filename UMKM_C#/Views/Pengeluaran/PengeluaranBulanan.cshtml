@@ -1,0 +1,106 @@
+﻿@{
+    ViewData["Title"] = "Pengeluaran Bulanan";
+    ViewData["Header"] = "Pengeluaran Bulanan";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-end">
+                        <form asp-action="GetPengeluaranHarian" method="get" id="dateForm">
+                            <div class="input-group">
+                                <input type="text" id="customDateInput" name="date" class="border border-1 rounded-start">
+                                <span class="input-group-append">
+                                    <button type="submit" class="btn btn-primary rounded-end"><i class="fas fa-search"></i></button>
+                                </span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    <div class="table-responsive">
+                        <table id="basic-datatables"
+                               class="display table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nama</th>
+                                    <th>Harga</th>
+                                    <th>Jumlah</th>
+                                    <th>Tanggal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    flatpickr("#customDateInput", {
+        dateFormat: "Y-m-d",
+        placeholder: ""
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        function reloadData(date) {
+            $("#basic-datatables").DataTable().ajax.url("https://localhost:7226/pengeluaran/GetPengeluaranHarian?date=" + date).load();
+        }
+        $("#basic-datatables").DataTable({
+            pageLength: 5,
+            ajax: {
+                url: "https://localhost:7226/pengeluaran/GetPengeluaranBulanan",
+                type: "GET",
+                dataSrc: "",
+            },
+            columns: [
+                { data: "nama" },
+                { data: "harga" },
+                { data: "jumlah" },
+                { data: "created_at" }
+            ],
+        });
+
+        $("#multi-filter-select").DataTable({
+            pageLength: 5,
+            initComplete: function () {
+                this.api()
+                    .columns()
+                    .every(function () {
+                        var column = this;
+                        var select = $(
+                            '<select class="form-select"><option value=""></option></select>'
+                        )
+                            .appendTo($(column.footer()).empty())
+                            .on("change", function () {
+                                var val = $.fn.dataTable.util.escapeRegex($(this).val());
+
+                                column
+                                    .search(val ? "^" + val + "$" : "", true, false)
+                                    .draw();
+                            });
+
+                        column
+                            .data()
+                            .unique()
+                            .sort()
+                            .each(function (d, j) {
+                                select.append(
+                                    '<option value="' + d + '">' + d + "</option>"
+                                );
+                            });
+                    });
+            },
+        });
+        $("#dateForm").on("submit", function (e) {
+            e.preventDefault();
+            var date = $("#customDateInput").val();
+            reloadData(date);
+        });
+    });
+</script>

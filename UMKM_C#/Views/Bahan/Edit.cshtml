@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "Info Bahan";
+    ViewData["Header"] = "Edit Bahan";
+}
+@model Bahan
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <form action="Edit" method="post">
+                        <input type="hidden" asp-for="Id"/>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="nama">Nama Bahan</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           asp-for="nama"
+                                           placeholder="Nama Bahan" />
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="jumlah">Jumlah</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           asp-for="jumlah"
+                                           placeholder="Jumlah Bahan" />
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="harga">Harga</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           asp-for="harga"
+                                           placeholder="Harga Bahan" />
+                                </div>
+                            </div>
+                            <div class="col-12 pt-2">
+                                <div class="d-flex flex-row-reverse">
+                                    <a asp-controller="infobahan" asp-action="index" class="btn btn-primary btn-round ms-1">
+                                        Kembali
+                                    </a>
+                                    <button class="btn btn-primary btn-round ms-1">
+                                        Edit Bahan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

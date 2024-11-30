@@ -1,0 +1,59 @@
+﻿@{
+    ViewData["Title"] = "Info Bahan";
+    ViewData["Header"] = "Tambah Bahan";
+}
+@model Bahan
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <form asp-action="tambah" method="post">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="nama">Nama Bahan</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           asp-for="nama"
+                                           placeholder="Nama Bahan" />
+                                    <span asp-validation-for="nama" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="jumlah">Jumlah</label>
+                                    <input type="number"
+                                           class="form-control"
+                                           asp-for="jumlah"
+                                           placeholder="Jumlah Bahan" />
+                                    <span asp-validation-for="jumlah" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="harga">Harga</label>
+                                    <input type="number"
+                                           class="form-control"
+                                           asp-for="harga"
+                                           placeholder="Harga Bahan" />
+                                    <span asp-validation-for="harga" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 pt-2">
+                                <div class="d-flex flex-row-reverse">
+                                    <a asp-controller="pengeluaran" asp-action="index" class="btn btn-primary btn-round ms-1">
+                                        Kembali
+                                    </a>
+                                    <button class="btn btn-primary btn-round ms-1" type="submit">
+                                        Tambah Bahan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

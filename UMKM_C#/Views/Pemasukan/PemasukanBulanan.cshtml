@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "Pemasukan Bulanan";
+    ViewData["Header"] = "Pemasukan Bulanan";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 id="totalKeseluruhan">Total Keseluruhan: 0</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="basic-datatables"
+                               class="display table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Total Pemasukan Harian</th>
+                                    <th>Tanggal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#basic-datatables").DataTable({
+            pageLength: 5,
+            ajax: {
+                url: "https://localhost:7226/pemasukan/GetPemasukanBulanan",
+                type: "GET",
+                dataSrc: function (json) {
+                    $("#totalKeseluruhan").text("Total Keseluruhan: " + json.totalKeseluruhan);
+                    return json.data;
+                },
+            },
+            columns: [
+                { data: "total" },
+                { data: "created_at" }
+            ],
+        });
+    });
+</script>

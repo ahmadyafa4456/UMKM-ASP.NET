@@ -1,0 +1,185 @@
+﻿@{
+    ViewData["Title"] = "Info Bahan";
+    ViewData["Header"] = "Info Bahan";
+    if (TempData["SuccessCreate"] != null || TempData["SuccessEdit"] != null)
+    {
+        <script>
+            swal({
+                title: "Success!",
+                text: "",
+                type: "success",
+                buttons: {
+                    confirm: {
+                        className: "btn btn-success",
+                    },
+                },
+            });
+        </script>
+    }
+}
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex align-items-center">
+                        <a asp-controller="bahan" asp-action="tambah" class="btn btn-primary btn-round ms-auto">
+                            <i class="fa fa-plus"></i>
+                            Tambah Bahan
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    <div class="table-responsive">
+                        <table id="basic-datatables"
+                               class="display table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nama</th>
+                                    <th>Harga</th>
+                                    <th>Jumlah</th>
+                                    <th style="width: 10%">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#basic-datatables").DataTable({
+            pageLength: 5,
+            ajax: {
+                url: "https://localhost:7226/bahan/GetBahan",
+                type: "GET",
+                dataSrc: "",
+            },
+            columns: [
+                { data: "nama" },
+
+                { data: "harga" },
+                { data: "jumlah" },
+                {
+                    data: "id", // Kolom custom untuk tombol Action
+                    render: function (data, type, row) {
+                        return `
+                                        <td>
+                                            <div class="form-button-action">
+                                                <a href="/bahan/edit/${row.id}" class="btn btn-link btn-primary btn-lg">
+                                                    <i class="fa fa-edit"></i>
+                                                </a>
+                                                         <button type="button" class="btn btn-link btn-danger" onclick="deleteBahan(${row.id})">
+                                                    <i class="fa fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    `;
+                    },
+                },
+            ],
+        });
+
+        $("#multi-filter-select").DataTable({
+            pageLength: 5,
+            initComplete: function () {
+                this.api()
+                    .columns()
+                    .every(function () {
+                        var column = this;
+                        var select = $(
+                            '<select class="form-select"><option value=""></option></select>'
+                        )
+                            .appendTo($(column.footer()).empty())
+                            .on("change", function () {
+                                var val = $.fn.dataTable.util.escapeRegex($(this).val());
+
+                                column
+                                    .search(val ? "^" + val + "$" : "", true, false)
+                                    .draw();
+                            });
+
+                        column
+                            .data()
+                            .unique()
+                            .sort()
+                            .each(function (d, j) {
+                                select.append(
+                                    '<option value="' + d + '">' + d + "</option>"
+                                );
+                            });
+                    });
+            },
+        });
+    });
+</script>
+<script>
+    function deleteBahan(id) {
+        swal({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            buttons: {
+                cancel: {
+                    visible: true,
+                    text: "No, cancel!",
+                    className: "btn btn-danger",
+                },
+                confirm: {
+                    text: "Yes, delete it!",
+                    className: "btn btn-success",
+                },
+            },
+        }).then((willDelete) => {
+            if (willDelete) {
+                // Lakukan permintaan AJAX untuk menghapus data
+                $.ajax({
+                    url: `https://localhost:7226/bahan/delete/${id}`, // URL endpoint dengan ID
+                    type: "DELETE",
+                    success: function (response) {
+                        // Jika berhasil
+                        swal("Deleted!", "Your data has been deleted.", {
+                            icon: "success",
+                            buttons: {
+                                confirm: {
+                                    className: "btn btn-success",
+                                },
+                            },
+                        });
+
+                        // Reload DataTable untuk memperbarui data
+                        $("#basic-datatables").DataTable().ajax.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        // Jika terjadi error
+                        swal("Error!", `Failed to delete data: ${xhr.responseText || error}`, {
+                            icon: "error",
+                            buttons: {
+                                confirm: {
+                                    className: "btn btn-danger",
+                                },
+                            },
+                        });
+                    },
+                });
+            } else {
+                swal("Cancelled", "Your data is safe!", {
+                    icon: "info",
+                    buttons: {
+                        confirm: {
+                            className: "btn btn-primary",
+                        },
+                    },
+                });
+            }
+        });
+    }
+</script>
