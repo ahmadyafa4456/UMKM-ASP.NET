@@ -1,0 +1,27 @@
+﻿.color-font {
+    color: black;
+}
+
+.text-center {
+    text-align: center;
+    vertical-align: middle;
+    height: 100px;
+}
+.input {
+    outline: none !important;
+    border-radius: 5px 0px 0px 5px !important;
+}
+
+.btn-search {
+    color: white;
+    border: none;
+    border-radius: 0px 5px 5px 0px;
+    padding: 10px 13px;
+}
+
+.btn-refresh {
+    border: none;
+    padding: 9px;
+    font-size: 15px;
+    border-radius: 5px;
+}

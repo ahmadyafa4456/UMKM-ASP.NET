@@ -13,9 +13,14 @@ namespace UMKM_C_.Controllers
             this.db = db;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string input)
         {
-            return View();
+            List<Bahan> bahan = db.Bahan.ToList();
+            if (!String.IsNullOrEmpty(input))
+            {
+                bahan = db.Bahan.Where(p => p.nama.Contains(input)).ToList();
+            }
+            return View(bahan);
         }
 
         public IActionResult Tambah()
@@ -31,19 +36,6 @@ namespace UMKM_C_.Controllers
                 return NotFound();
             }
             return View(bahan);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetBahan()
-        {
-            var bahan = await db.Bahan.Select(b => new
-            {
-                b.Id,
-                b.nama,
-                b.jumlah,
-                b.harga
-            }).ToListAsync();
-            return Ok(bahan);
         }
 
         [HttpPost]

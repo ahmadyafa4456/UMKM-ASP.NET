@@ -2,24 +2,67 @@
     ViewData["Title"] = "Pemasukan Bulanan";
     ViewData["Header"] = "Pemasukan Bulanan";
 }
+@model PemasukanViewModel
 <div class="container">
     <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 id="totalKeseluruhan">Total Keseluruhan: 0</h3>
+                    <div class="d-flex justify-content-between">
+                        @if (Model.Total != null)
+                        {
+                            <h3>Total Keseluruhan: @Model.Total</h3>
+                        }
+                        else
+                        {
+                            <h3></h3>
+                        }
+                        <form asp-action="PemasukanBulanan" method="get" id="dateForm">
+                            <div class="input-group">
+                                <input type="text" id="customDateInput" name="date" class="border border-1 rounded-start">
+                                <span class="input-group-append">
+                                    <button type="submit" class="btn btn-primary rounded-end"><i class="fas fa-search"></i></button>
+                                </span>
+                            </div>
+                        </form>
+                    </div>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table id="basic-datatables"
-                               class="display table table-striped table-hover">
+                    <div>
+                        <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Total Pemasukan Harian</th>
-                                    <th>Tanggal</th>
+                                    <th scope="col">Total Pemasukan Harian</th>
+                                    <th scope="col">Tanggal</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @if (Model.Pemasukan_bulanan != null)
+                                {
+                                    @if (Model.Pemasukan_harian != null)
+                                    {
+                                        <tr>
+                                            <td>@Model.Pemasukan_harian.Total</td>
+                                            <td>@Model.Pemasukan_harian.Created_at</td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var i in Model.Pemasukan_bulanan)
+                                        {
+                                            <tr>
+                                                <td>@i.Pemasukan_harian.Total</td>
+                                                <td>@i.Pemasukan_harian.Created_at</td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="2" class="text-center">Tidak ada data</td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -29,21 +72,8 @@
     </div>
 </div>
 <script>
-    $(document).ready(function () {
-        $("#basic-datatables").DataTable({
-            pageLength: 5,
-            ajax: {
-                url: "https://localhost:7226/pemasukan/GetPemasukanBulanan",
-                type: "GET",
-                dataSrc: function (json) {
-                    $("#totalKeseluruhan").text("Total Keseluruhan: " + json.totalKeseluruhan);
-                    return json.data;
-                },
-            },
-            columns: [
-                { data: "total" },
-                { data: "created_at" }
-            ],
-        });
+    flatpickr("#customDateInput", {
+        dateFormat: "Y-m-d",
+        placeholder: ""
     });
 </script>

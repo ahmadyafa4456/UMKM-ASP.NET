@@ -16,12 +16,39 @@ namespace UMKM_C_.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var today = DateTime.Now.ToString(format: "yyyy-MM-dd");
+            List<Pengeluaran_harian> pengeluaran_harian = db.Pengeluaran_harian.Where(p => p.Created_at == today).ToList();
+            return View(pengeluaran_harian);
         }
-        
-        public IActionResult PengeluaranBulanan()
+
+        public IActionResult PengeluaranBulanan(string date, int pg = 1)
         {
-            return View();
+            var month = DateTime.Now.Month;
+            var pengeluaran_bulanan = db.Pengeluaran_bulanan
+                .Include(p => p.Pengeluaran_harian)
+                .Where(p => p.Bulan == month)
+                .ToList();
+            var pengeluaran_harian = db.Pengeluaran_harian
+                .Where(p => p.Created_at == date)
+                .ToList();
+            const int pageSize = 5;
+            if (pg < 1) { pg = 1; };
+            int recsCount = pengeluaran_bulanan.Count();
+            var pager = new Pager(recsCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            if(date != null)
+            {
+                 recsCount = pengeluaran_harian.Count();
+                 pager = new Pager(recsCount, pg, pageSize);
+                 recSkip = (pg - 1) * pageSize;
+            }
+            var pengeluaran = new PengeluaranViewModel()
+            {
+                Pengeluaran_Bulanan = pengeluaran_bulanan.Skip(recSkip).Take(pager.PageSize).ToList(),
+                Pengeluaran_Harian = pengeluaran_harian.Skip(recSkip).Take(pager.PageSize).ToList()
+            };
+            this.ViewBag.Pager = pager;
+            return View(pengeluaran);
         }
 
         public IActionResult Tambah()
@@ -51,41 +78,6 @@ namespace UMKM_C_.Controllers
                 return RedirectToAction("Index");
             }
             return View();
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetPengeluaranHarian(string date)
-        {
-            var today = DateTime.Now.ToString(format: "yyyy-MM-dd");
-            var pengeluaranHarian = await db.Pengeluaran_bulanan.Where(
-                p => p.Pengeluaran_harian.Created_at == today
-                ).Select(ph => new { ph.Pengeluaran_harian.Nama, ph.Pengeluaran_harian.Harga, ph.Pengeluaran_harian.Jumlah, ph.Pengeluaran_harian.Created_at })
-                .ToListAsync();
-            if (date != null)
-            {
-                pengeluaranHarian = await db.Pengeluaran_bulanan.Where(
-                p => p.Pengeluaran_harian.Created_at == date
-                ).Select(ph => new { ph.Pengeluaran_harian.Nama, ph.Pengeluaran_harian.Harga, ph.Pengeluaran_harian.Jumlah, ph.Pengeluaran_harian.Created_at })
-                .ToListAsync();
-            }
-            if (pengeluaranHarian == null)
-            {
-                return NoContent();
-            }
-            return Ok(pengeluaranHarian);
-        }
-
-        public async Task<IActionResult> GetPengeluaranBulanan()
-        {
-            var month = DateTime.Now.Month;
-            var pengeluaranBulanan = await db.Pengeluaran_bulanan.Where(pb => pb.Bulan == month).Select(
-                ph => new { ph.Pengeluaran_harian.Nama, ph.Pengeluaran_harian.Harga, ph.Pengeluaran_harian.Jumlah, ph.Pengeluaran_harian.Created_at }
-                ).ToListAsync();
-            if(pengeluaranBulanan == null)
-            {
-                return NoContent();
-            }
-            return Ok(pengeluaranBulanan);
         }
     }
 }

@@ -2,20 +2,13 @@
     ViewData["Title"] = "Pengeluaran Harian";
     ViewData["Header"] = "Pengeluaran Harian";
 }
+@model List<Pengeluaran_harian>
 <div class="container">
     <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex justify-content-end">
-                        <form asp-action="GetPengeluaranHarian" method="get" id="dateForm">
-                            <div class="input-group">
-                                <input type="text" id="customDateInput" name="date" class="border border-1 rounded-start">
-                                <span class="input-group-append">
-                                    <button type="submit" class="btn btn-primary rounded-end"><i class="fas fa-search"></i></button>
-                                </span>
-                            </div>
-                        </form>
                         <a asp-controller="pengeluaran" asp-action="tambah" class="btn btn-primary btn-round ms-auto">
                             <i class="fa fa-plus"></i>
                             Tambah
@@ -23,19 +16,35 @@
                     </div>
                 </div>
                 <div class="card-body">
-
-                    <div class="table-responsive">
-                        <table id="basic-datatables"
-                               class="display table table-striped table-hover">
+                    <div>
+                        <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Nama</th>
-                                    <th>Harga</th>
-                                    <th>Jumlah</th>
-                                    <th>Tanggal</th>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Nama</th>
+                                    <th scope="col">Harga</th>
+                                    <th scope="col">Jumlah</th>
+                                    <th scope="col">Tanggal</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @if(Model != null && Model.Count > 0) {
+                                    int n = 1;
+                                    @foreach(var i in Model){
+                                        <tr>
+                                            <td>@n</td>
+                                            <td>@i.Nama</td>
+                                            <td>@i.Harga</td>
+                                            <td>@i.Jumlah</td>
+                                            <td>@i.Created_at</td>
+                                        </tr>
+                                        n++;
+                                    }
+                                }else{
+                                    <tr>
+                                        <td colspan="4" class="text-center">Tidak ada Pengeluaran</td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -48,63 +57,5 @@
     flatpickr("#customDateInput", {
         dateFormat: "Y-m-d",
         placeholder: ""
-    });
-</script>
-<script>
-    $(document).ready(function () {
-        function reloadData(date) {
-            $("#basic-datatables").DataTable().ajax.url("https://localhost:7226/pengeluaran/GetPengeluaranHarian?date=" + date).load();
-        }
-        $("#basic-datatables").DataTable({
-            pageLength: 5,
-            ajax: {
-                url: "https://localhost:7226/pengeluaran/GetPengeluaranHarian",
-                type: "GET",
-                dataSrc: "",
-            },
-            columns: [
-                { data: "nama" },
-                { data: "harga" },
-                { data: "jumlah" },
-                { data: "created_at" }
-            ],
-        });
-
-        $("#multi-filter-select").DataTable({
-            pageLength: 5,
-            initComplete: function () {
-                this.api()
-                    .columns()
-                    .every(function () {
-                        var column = this;
-                        var select = $(
-                            '<select class="form-select"><option value=""></option></select>'
-                        )
-                            .appendTo($(column.footer()).empty())
-                            .on("change", function () {
-                                var val = $.fn.dataTable.util.escapeRegex($(this).val());
-
-                                column
-                                    .search(val ? "^" + val + "$" : "", true, false)
-                                    .draw();
-                            });
-
-                        column
-                            .data()
-                            .unique()
-                            .sort()
-                            .each(function (d, j) {
-                                select.append(
-                                    '<option value="' + d + '">' + d + "</option>"
-                                );
-                            });
-                    });
-            },
-        });
-        $("#dateForm").on("submit", function (e) {
-            e.preventDefault();  
-            var date = $("#customDateInput").val();  
-            reloadData(date); 
-        });
     });
 </script>

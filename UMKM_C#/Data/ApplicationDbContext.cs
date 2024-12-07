@@ -24,6 +24,9 @@ namespace UMKM_C_.Data
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Pemasukan_bulanan>().HasOne(p => p.Pemasukan_harian).WithMany(p => p.Pemasukan_bulanan)
             .HasForeignKey(p => p.HarianId).OnDelete(DeleteBehavior.Restrict);
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Pengeluaran_bulanan>().HasOne(p => p.Pengeluaran_harian).WithMany(p => p.Pengeluaran_bulanan)
+            .HasForeignKey(p => p.HarianId).OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

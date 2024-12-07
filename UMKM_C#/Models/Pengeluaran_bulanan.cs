@@ -8,8 +8,8 @@ namespace UMKM_C_.Models
     {
         public int Id { get; set; }
         [ValidateNever]
-        public Pengeluaran_harian Pengeluaran_harian { get; set; }
         public int HarianId { get; set; }
+        public Pengeluaran_harian Pengeluaran_harian { get; set; }
         public int Bulan { get; set; }
     }
 }

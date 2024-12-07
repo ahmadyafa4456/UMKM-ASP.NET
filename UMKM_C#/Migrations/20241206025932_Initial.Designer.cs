@@ -12,8 +12,8 @@ using UMKM_C_.Data;
 namespace UMKM_C_.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241127023914_AddPemasukanBulanan")]
-    partial class AddPemasukanBulanan
+    [Migration("20241206025932_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -114,12 +114,9 @@ namespace UMKM_C_.Migrations
                     b.Property<int>("HarianId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Pengeluaran_harianId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("Pengeluaran_harianId");
+                    b.HasIndex("HarianId");
 
                     b.ToTable("Pengeluaran_bulanan");
                 });
@@ -171,8 +168,8 @@ namespace UMKM_C_.Migrations
                 {
                     b.HasOne("UMKM_C_.Models.Pengeluaran_harian", "Pengeluaran_harian")
                         .WithMany("Pengeluaran_bulanan")
-                        .HasForeignKey("Pengeluaran_harianId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("HarianId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Pengeluaran_harian");

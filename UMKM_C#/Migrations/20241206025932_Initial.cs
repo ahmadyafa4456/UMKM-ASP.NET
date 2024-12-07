@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace UMKM_C_.Migrations
 {
     /// <inheritdoc />
-    public partial class Update : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -36,6 +36,24 @@ namespace UMKM_C_.Migrations
             //    .Annotation("MySql:CharSet", "utf8mb4");
 
             //migrationBuilder.CreateTable(
+            //    name: "Pemasukan_harian",
+            //    columns: table => new
+            //    {
+            //        Id = table.Column<int>(type: "int", nullable: false)
+            //            .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+            //        Total = table.Column<int>(type: "int", nullable: false),
+            //        Created_at = table.Column<string>(type: "longtext", nullable: true)
+            //            .Annotation("MySql:CharSet", "utf8mb4"),
+            //        Updated_at = table.Column<string>(type: "longtext", nullable: true)
+            //            .Annotation("MySql:CharSet", "utf8mb4")
+            //    },
+            //    constraints: table =>
+            //    {
+            //        table.PrimaryKey("PK_Pemasukan_harian", x => x.Id);
+            //    })
+            //    .Annotation("MySql:CharSet", "utf8mb4");
+
+            //migrationBuilder.CreateTable(
             //    name: "Pengeluaran_harian",
             //    columns: table => new
             //    {
@@ -53,6 +71,27 @@ namespace UMKM_C_.Migrations
             //    constraints: table =>
             //    {
             //        table.PrimaryKey("PK_Pengeluaran_harian", x => x.Id);
+            //    })
+            //    .Annotation("MySql:CharSet", "utf8mb4");
+
+            //migrationBuilder.CreateTable(
+            //    name: "Pemasukan_bulanan",
+            //    columns: table => new
+            //    {
+            //        Id = table.Column<int>(type: "int", nullable: false)
+            //            .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+            //        HarianId = table.Column<int>(type: "int", nullable: false),
+            //        Bulan = table.Column<int>(type: "int", nullable: false)
+            //    },
+            //    constraints: table =>
+            //    {
+            //        table.PrimaryKey("PK_Pemasukan_bulanan", x => x.Id);
+            //        table.ForeignKey(
+            //            name: "FK_Pemasukan_bulanan_Pemasukan_harian_HarianId",
+            //            column: x => x.HarianId,
+            //            principalTable: "Pemasukan_harian",
+            //            principalColumn: "Id",
+            //            onDelete: ReferentialAction.Restrict);
             //    })
             //    .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -77,6 +116,11 @@ namespace UMKM_C_.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_Pemasukan_bulanan_HarianId",
+            //    table: "Pemasukan_bulanan",
+            //    column: "HarianId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Pengeluaran_bulanan_HarianId",
                 table: "Pengeluaran_bulanan",
@@ -90,7 +134,13 @@ namespace UMKM_C_.Migrations
                 name: "Bahan");
 
             migrationBuilder.DropTable(
+                name: "Pemasukan_bulanan");
+
+            migrationBuilder.DropTable(
                 name: "Pengeluaran_bulanan");
+
+            migrationBuilder.DropTable(
+                name: "Pemasukan_harian");
 
             migrationBuilder.DropTable(
                 name: "Pengeluaran_harian");

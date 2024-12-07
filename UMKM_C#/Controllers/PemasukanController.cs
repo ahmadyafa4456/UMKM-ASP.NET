@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using UMKM_C_.Data;
 using UMKM_C_.Models;
+using UMKM_C_.Models.ViewModels;
 
 namespace UMKM_C_.Controllers
 {
@@ -35,9 +36,25 @@ namespace UMKM_C_.Controllers
             return View(pemasukan);
         }
 
-        public IActionResult PemasukanBulanan()
+        public IActionResult PemasukanBulanan(string date)
         {
-            return View();
+            var month = DateTime.Now.Month;
+            var pemasukan_bulanan = db.Pemasukan_bulanan
+                .Include(p => p.Pemasukan_harian)
+                .Where(p => p.Bulan == month)
+                .ToList();
+            var total = db.Pemasukan_bulanan
+                .Include(p => p.Pemasukan_harian)
+                .Where(p => p.Bulan == month)
+                .Sum(p => p.Pemasukan_harian.Total);
+            var pemasukan_harian = db.Pemasukan_harian.Where(p => p.Created_at == date).FirstOrDefault();
+            var pemasukan = new PemasukanViewModel()
+            {
+                Pemasukan_bulanan = pemasukan_bulanan,
+                Pemasukan_harian = pemasukan_harian,
+                Total = total
+            };
+            return View(pemasukan);
         }
 
         [HttpPost]

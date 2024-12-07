@@ -1,14 +1,23 @@
 ﻿@{
     ViewData["Title"] = "Pengeluaran Bulanan";
     ViewData["Header"] = "Pengeluaran Bulanan";
+
+    Pager pager = new Pager();
+    int pageNo = 0;
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
 }
+@model PengeluaranViewModel
 <div class="container">
     <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex justify-content-end">
-                        <form asp-action="GetPengeluaranHarian" method="get" id="dateForm">
+                        <form asp-action="PengeluaranBulanan" method="get" id="dateForm">
                             <div class="input-group">
                                 <input type="text" id="customDateInput" name="date" class="border border-1 rounded-start">
                                 <span class="input-group-append">
@@ -19,22 +28,86 @@
                     </div>
                 </div>
                 <div class="card-body">
-
-                    <div class="table-responsive">
-                        <table id="basic-datatables"
-                               class="display table table-striped table-hover">
+                    <div>
+                        <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Nama</th>
-                                    <th>Harga</th>
-                                    <th>Jumlah</th>
-                                    <th>Tanggal</th>
+                                    <th scope="col">Nama</th>
+                                    <th scope="col">Harga</th>
+                                    <th scope="col">Jumlah</th>
+                                    <th scope="col">Tanggal</th>
                                 </tr>
                             </thead>
                             <tbody>
+
+                                @if (Model.Pengeluaran_Bulanan != null && Model.Pengeluaran_Bulanan.Count > 0)
+                                {
+                                    @if (Model.Pengeluaran_Harian != null && Model.Pengeluaran_Harian.Count > 0)
+                                    {
+                                        @foreach (var i in Model.Pengeluaran_Harian)
+                                        {
+                                            <tr>
+                                                <td>@i.Nama</td>
+                                                <td>@i.Harga</td>
+                                                <td>@i.Jumlah</td>
+                                                <td>@i.Created_at</td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @foreach (var i in Model.Pengeluaran_Bulanan)
+                                        {
+                                            <tr>
+                                                <td>@i.Pengeluaran_harian.Nama</td>
+                                                <td>@i.Pengeluaran_harian.Harga</td>
+                                                <td>@i.Pengeluaran_harian.Jumlah</td>
+                                                <td>@i.Pengeluaran_harian.Created_at</td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4" class="text-center">Tidak ada data</td>
+                                    </tr>
+                                }
+
                             </tbody>
                         </table>
                     </div>
+                </div>
+                <div class="card-footer d-flex justify-content-end">
+                    @if (pager.TotalPages > 0)
+                    {
+                        <ul class="pagination">
+                            @if (pager.CurrentPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-controller="Pengeluaran" asp-action="PengeluaranBulanan" asp-route-pg="1">First</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" asp-controller="Pengeluaran" asp-action="PengeluaranBulanan" asp-route-pg="@(pager.CurrentPage - 1)">Previous</a>
+                                </li>
+                            }
+                            @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+                            {
+                                <li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
+                                    <a class="page-link @(pge == pager.CurrentPage ? "text-white" : "")" asp-controller="Pengeluaran" asp-action="PengeluaranBulanan" asp-route-pg="@pge">@pge</a>
+                                </li>
+                            }
+                            @if (pager.CurrentPage < pager.TotalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-controller="Pengeluaran" asp-action="PengeluaranBulanan" asp-route-pg="@(pager.CurrentPage + 1)">Next</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" asp-controller="Pengeluaran" asp-action="PengeluaranBulanan" asp-route-pg="@(pager.TotalPages)">Last</a>
+                                </li>
+                            }
+                        </ul>
+                    }
                 </div>
             </div>
         </div>
@@ -44,63 +117,5 @@
     flatpickr("#customDateInput", {
         dateFormat: "Y-m-d",
         placeholder: ""
-    });
-</script>
-<script>
-    $(document).ready(function () {
-        function reloadData(date) {
-            $("#basic-datatables").DataTable().ajax.url("https://localhost:7226/pengeluaran/GetPengeluaranHarian?date=" + date).load();
-        }
-        $("#basic-datatables").DataTable({
-            pageLength: 5,
-            ajax: {
-                url: "https://localhost:7226/pengeluaran/GetPengeluaranBulanan",
-                type: "GET",
-                dataSrc: "",
-            },
-            columns: [
-                { data: "nama" },
-                { data: "harga" },
-                { data: "jumlah" },
-                { data: "created_at" }
-            ],
-        });
-
-        $("#multi-filter-select").DataTable({
-            pageLength: 5,
-            initComplete: function () {
-                this.api()
-                    .columns()
-                    .every(function () {
-                        var column = this;
-                        var select = $(
-                            '<select class="form-select"><option value=""></option></select>'
-                        )
-                            .appendTo($(column.footer()).empty())
-                            .on("change", function () {
-                                var val = $.fn.dataTable.util.escapeRegex($(this).val());
-
-                                column
-                                    .search(val ? "^" + val + "$" : "", true, false)
-                                    .draw();
-                            });
-
-                        column
-                            .data()
-                            .unique()
-                            .sort()
-                            .each(function (d, j) {
-                                select.append(
-                                    '<option value="' + d + '">' + d + "</option>"
-                                );
-                            });
-                    });
-            },
-        });
-        $("#dateForm").on("submit", function (e) {
-            e.preventDefault();
-            var date = $("#customDateInput").val();
-            reloadData(date);
-        });
     });
 </script>
