@@ -122,10 +122,10 @@ a {
     text-decoration: none !important;
 }
 
-    a:focus,
+/*    a:focus,
     a:hover {
-        color: #1269db;
-    }
+        color: none;
+    }*/
 
 .h1,
 h1 {
@@ -7106,16 +7106,16 @@ label.error {
     }
 
 .btn-secondary {
-    background: #6861ce !important;
-    border-color: #6861ce !important;
+    background: rgb(31 41 55 / 1) !important;
+    border-color: rgb(31 41 55 / 1) !important;
 }
 
     .btn-secondary:disabled,
     .btn-secondary:focus,
     .btn-secondary:hover {
         color: #fff !important;
-        background: #6861ce !important;
-        border-color: #6861ce !important;
+/*        background: #6861ce !important;
+        border-color: #6861ce !important;*/
     }
 
 .btn-info {

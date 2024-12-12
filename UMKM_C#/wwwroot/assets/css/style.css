@@ -1,4 +1,13 @@
-﻿.color-font {
+﻿li {
+    list-style-type: none;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.color-font {
     color: black;
 }
 
@@ -7,6 +16,7 @@
     vertical-align: middle;
     height: 100px;
 }
+
 .input {
     outline: none !important;
     border-radius: 5px 0px 0px 5px !important;
@@ -24,4 +34,37 @@
     padding: 9px;
     font-size: 15px;
     border-radius: 5px;
+}
+
+.btn-export {
+    border: 1px solid transparent;
+    border-color: rgb(209 213 219 / 1);
+    background: none;
+    padding: 5px 27px;
+    font-size: 15px;
+    color: black;
+}
+
+.modal-export {
+    position: absolute;
+    border: 1px solid transparent;
+    border-color: rgb(209 213 219 / 1);
+    background: #ffffff;
+    margin: 0px;
+    padding: 8px 0px;
+    top: 19%;
+    left: 1.6%;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s, display 0.5s;
+}
+
+.modal-sub {
+    padding: 0px 35px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.modal-sub:hover {
+ background: #efeeee;
 }

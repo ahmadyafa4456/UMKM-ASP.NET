@@ -2,50 +2,57 @@
     ViewData["Title"] = "Info Bahan";
     ViewData["Header"] = "Tambah Bahan";
 }
-@model Bahan
+@model TambahBahanViewModel
 <div class="container">
     <div class="row">
         <div class="col-12">
             <div class="card">
+                <div class="card-header">
+                    <div class="d-flex align-items-center">
+                        <div class="btn btn-primary btn-round ms-auto"
+                             id="addbtn">
+                            <i class="fa fa-plus"></i>
+                            Tambah Input
+                        </div>
+                    </div>
+                </div>
                 <div class="card-body">
                     <form asp-action="tambah" method="post">
                         <div class="row">
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label asp-for="nama">Nama Bahan</label>
+                            <div class="col-12" id="input-group">
+                                <div class="form-group p-3 border border-1 rounded-2 mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <h3>Bahan</h3>
+                                    </div>
+                                    <label asp-for="@Model.Bahan[0].nama">Nama Bahan</label>
                                     <input type="text"
                                            class="form-control"
-                                           asp-for="nama"
+                                           asp-for="@Model.Bahan[0].nama"
                                            placeholder="Nama Bahan" />
-                                    <span asp-validation-for="nama" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label asp-for="jumlah">Jumlah</label>
+                                    <span asp-validation-for="@Model.Bahan[0].nama" class="text-danger"></span>
+                                    <label asp-for="@Model.Bahan[0].jumlah">Jumlah</label>
                                     <input type="number"
                                            class="form-control"
-                                           asp-for="jumlah"
+                                           asp-for="@Model.Bahan[0].jumlah"
                                            placeholder="Jumlah Bahan" />
-                                    <span asp-validation-for="jumlah" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label asp-for="harga">Harga</label>
+                                    <span asp-validation-for="@Model.Bahan[0].jumlah" class="text-danger"></span>
+                                    <label asp-for="@Model.Bahan[0].harga">Harga</label>
                                     <input type="number"
                                            class="form-control"
-                                           asp-for="harga"
+                                           asp-for="@Model.Bahan[0].harga"
                                            placeholder="Harga Bahan" />
-                                    <span asp-validation-for="harga" class="text-danger"></span>
+                                    <span asp-validation-for="@Model.Bahan[0].harga" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-12 pt-2">
                                 <div class="d-flex flex-row-reverse">
-                                    <a asp-controller="bahan" asp-action="index" class="btn btn-primary btn-round ms-1">
+                                    <a asp-controller="bahan"
+                                       asp-action="index"
+                                       class="btn btn-primary btn-round ms-1">
                                         Kembali
                                     </a>
-                                    <button class="btn btn-primary btn-round ms-1" type="submit">
+                                    <button class="btn btn-primary btn-round ms-1"
+                                            type="submit">
                                         Tambah Bahan
                                     </button>
                                 </div>
@@ -57,3 +64,51 @@
         </div>
     </div>
 </div>
+<script>
+    let dataCount = 1;
+    const input_group = document.getElementById("input-group");
+    const addbtn = document.getElementById("addbtn");
+    function addForm() {
+        const addrow = `<div class="form-group p-3 border border-1 rounded-2 mb-3">
+                                            <div class="d-flex justify-content-between">
+                                                <h3>Bahan</h3>
+                                                    <a
+                                      class="btn btn-danger rounded-4 ms-2 remove-btn"
+                                    >
+                                      <i class="fas fa-times"></i>
+                                    </a>
+                                            </div>
+                                            <label>Nama Bahan</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                       name="Bahan[${dataCount}].nama"
+                                                   placeholder="Nama Bahan" />
+                                            <label>Jumlah</label>
+                                            <input type="number"
+                                                   class="form-control"
+                                                   name="Bahan[${dataCount}].jumlah"
+                                                   placeholder="Jumlah Bahan" />
+                                            <label>Harga</label>
+                                            <input type="number"
+                                                   class="form-control"
+                                                      name="Bahan[${dataCount}].harga"
+                                                   placeholder="Harga Bahan" />
+                                        </div>`;
+        input_group.insertAdjacentHTML("beforeend", addrow);
+        dataCount++;
+    }
+    input_group.addEventListener("click", function (e) {
+        if (
+            e.target.classList.contains("remove-btn") ||
+            e.target.closest(".remove-btn")
+        ) {
+            const formGroup = e.target.closest(".form-group");
+            if (formGroup) {
+                dataCount--;
+                formGroup.remove()
+            };
+        }
+    });
+    addbtn.addEventListener("click", addForm);
+
+</script>

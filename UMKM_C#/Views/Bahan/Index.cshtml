@@ -16,14 +16,47 @@
             });
         </script>
     }
+    Pager pager = new Pager();
+    int pageNo = 0;
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
 }
 @model List<Bahan>
 <div class="container">
     <div class="row">
+        <div class="mb-3">
+            <div class="d-flex justify-content-start">
+                <a asp-controller="bahan" asp-action="tambah" class="btn btn-primary rounded">
+                    <i class="fa fa-plus"></i>
+                    Tambah Bahan
+                </a> 
+                <a asp-controller="bahan" asp-action="ImportBahan" class="btn btn-secondary rounded ms-2">
+                    <i class="fa-solid fa-upload me-2"></i>
+                    Import
+                </a>
+            </div>
+        </div>
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <div class="d-flex align-items-between">
+                    <div class="d-flex justify-content-between">
+                        <div class="d-flex">
+                            <button class="btn-export rounded-start-2" id="exports" type="button">
+                                Export
+                            </button>
+                            <a asp-controller="bahan" asp-action="index" class="btn-export rounded-end-2 d-flex align-items-center">
+                                <i class="fa-solid fa-arrows-rotate"></i>
+                            </a>
+                        </div>
+                        <div>
+                            <ul class="rounded modal-export" id="modal">
+                                <li class="py-1 modal-sub">Excel</li>
+                                <li class="py-1 modal-sub">Word</li>
+                            </ul>
+                        </div>
                         <form asp-action="Index" method="get">
                             <div class="d-flex justify-content-start">
                                 <input type="text"
@@ -32,21 +65,11 @@
                                 <button type="submit" class="bg-primary btn-search">
                                     <i class="fa-solid fa-magnifying-glass"></i>
                                 </button>
-                                <div class="ms-2">
-                                    <button asp-controller="bahan" asp-action="index" class="color-font btn-refresh">
-                                        <i class="fa-solid fa-arrows-rotate"></i>
-                                    </button>
-                                </div>
                             </div>
                         </form>
-                        <a asp-controller="bahan" asp-action="tambah" class="btn btn-primary btn-round ms-auto">
-                            <i class="fa fa-plus"></i>
-                            Tambah Bahan
-                        </a>
                     </div>
                 </div>
                 <div class="card-body">
-
                     <div>
                         <table class="table">
                             <thead>
@@ -89,12 +112,66 @@
                         </table>
                     </div>
                 </div>
+                <div class="card-footer d-flex justify-content-end">
+                    @if (pager.TotalPages > 0)
+                    {
+                        <ul class="pagination">
+                            @if (pager.CurrentPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-controller="Bahan" asp-action="Index" asp-route-pg="1">First</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" asp-controller="Bahan" asp-action="Index" asp-route-pg="@(pager.CurrentPage - 1)">Previous</a>
+                                </li>
+                            }
+                            @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+                            {
+                                <li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
+                                    <a class="page-link @(pge == pager.CurrentPage ? "text-white" : "")" asp-controller="Bahan" asp-action="Index" asp-route-pg="@pge">@pge</a>
+                                </li>
+                            }
+                            @if (pager.CurrentPage < pager.TotalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-controller="Bahan" asp-action="Index" asp-route-pg="@(pager.CurrentPage + 1)">Next</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" asp-controller="Bahan" asp-action="Index" asp-route-pg="@(pager.TotalPages)">Last</a>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+        document.addEventListener("DOMContentLoaded", () => {
+        const modal = document.getElementById("modal");
+        const exports = document.getElementById("exports");
+
+        exports.addEventListener("click", () => {
+            if (modal.style.display === "block") {
+              modal.style.display = "none";
+              modal.style.opacity = "1";
+            } else {
+              modal.style.display = "block";
+              modal.style.opacity = "1";
+            }
+        });
+
+        document.addEventListener("click", (event) => {
+            if (!modal.contains(event.target) && event.target !== exports) {
+              if (modal.style.display === "block") {
+                modal.style.display = "none";
+                modal.style.opacity = "1";
+              }
+            }
+        });
+    });
     function deleteBahan(id) {
         swal({
             title: "Are you sure?",

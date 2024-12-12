@@ -53,13 +53,13 @@ namespace UMKM_C_.Controllers
 
         public IActionResult Tambah()
         {
-            var viewModel = new BahanViewModel();
+            var viewModel = new TambahPengeluaranViewModel();
             viewModel.bahan.Add(new Pengeluaran_harian());
             return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Tambah(BahanViewModel model)
+        public async Task<IActionResult> Tambah(TambahPengeluaranViewModel model)
         {
             if (ModelState.IsValid)
             {
