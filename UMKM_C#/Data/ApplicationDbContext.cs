@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using UMKM_C_.Models;
 
 namespace UMKM_C_.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
         public DbSet<Bahan> Bahan { get; set; }
         public DbSet<Pengeluaran_harian> Pengeluaran_harian { get; set; }
@@ -13,9 +14,9 @@ namespace UMKM_C_.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if(!optionsBuilder.IsConfigured)
+            if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseMySql("Server=localhost;Database=UMKM;User=root;Password=4456", new MySqlServerVersion(new Version(8,0,21)));
+                optionsBuilder.UseMySql("Server=localhost;Database=UMKM;User=root;Password=4456", new MySqlServerVersion(new Version(8, 0, 21)));
             }
         }
 

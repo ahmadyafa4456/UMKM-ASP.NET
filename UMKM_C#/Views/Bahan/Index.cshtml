@@ -53,8 +53,12 @@
                         </div>
                         <div>
                             <ul class="rounded modal-export" id="modal">
-                                <li class="py-1 modal-sub">Excel</li>
-                                <li class="py-1 modal-sub">Word</li>
+                                <a asp-controller="bahan" asp-action="GenerateExcel">
+                                    <li class="py-1 modal-sub">Excel</li>
+                                </a>
+                                <a asp-controller="bahan" asp-action="GeneratePdf">
+                                    <li class="py-1 modal-sub">Pdf</li>
+                                </a>
                             </ul>
                         </div>
                         <form asp-action="Index" method="get">

@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "C#: UMKM_C# [https]",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\UMKM_C#.csproj",
+            "launchConfigurationId": "TargetFramework=;https"
+        }
+    ]
+}

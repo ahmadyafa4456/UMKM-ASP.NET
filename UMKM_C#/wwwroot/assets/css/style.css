@@ -1,70 +1,90 @@
 ﻿li {
-    list-style-type: none;
+  list-style-type: none;
 }
 
 a {
-    color: inherit;
-    text-decoration: none;
+  color: inherit;
+  text-decoration: none;
 }
 
 .color-font {
-    color: black;
+  color: black;
 }
 
 .text-center {
-    text-align: center;
-    vertical-align: middle;
-    height: 100px;
+  text-align: center;
+  vertical-align: middle;
+  height: 100px;
 }
 
 .input {
-    outline: none !important;
-    border-radius: 5px 0px 0px 5px !important;
+  outline: none !important;
+  border-radius: 5px 0px 0px 5px !important;
 }
 
 .btn-search {
-    color: white;
-    border: none;
-    border-radius: 0px 5px 5px 0px;
-    padding: 10px 13px;
+  color: white;
+  border: none;
+  border-radius: 0px 5px 5px 0px;
+  padding: 10px 13px;
 }
 
 .btn-refresh {
-    border: none;
-    padding: 9px;
-    font-size: 15px;
-    border-radius: 5px;
+  border: none;
+  padding: 9px;
+  font-size: 15px;
+  border-radius: 5px;
 }
 
 .btn-export {
-    border: 1px solid transparent;
-    border-color: rgb(209 213 219 / 1);
-    background: none;
-    padding: 5px 27px;
-    font-size: 15px;
-    color: black;
+  border: 1px solid transparent;
+  border-color: rgb(209 213 219 / 1);
+  background: none;
+  padding: 5px 27px;
+  font-size: 15px;
+  color: black;
 }
 
 .modal-export {
-    position: absolute;
-    border: 1px solid transparent;
-    border-color: rgb(209 213 219 / 1);
-    background: #ffffff;
-    margin: 0px;
-    padding: 8px 0px;
-    top: 19%;
-    left: 1.6%;
-    display: none;
-    opacity: 0;
-    transition: opacity 0.5s, display 0.5s;
+  position: absolute;
+  border: 1px solid transparent;
+  border-color: rgb(209 213 219 / 1);
+  background: #ffffff;
+  margin: 0px;
+  padding: 8px 0px;
+  top: 11%;
+  left: 1.6%;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.5s, display 0.5s;
+}
+
+.modal-export a {
+  color: black !important;
 }
 
 .modal-sub {
-    padding: 0px 35px;
-    cursor: pointer;
-    font-size: 15px;
+  padding: 0px 34px;
+  cursor: pointer;
+  font-size: 15px;
 }
 
 .modal-sub:hover {
- background: #efeeee;
+  background: #efeeee;
+}
+.card-form {
+  width: 450px;
+  border-radius: 11px;
+  padding: 30px;
+}
+
+.cf {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.w100 {
+  width: 100%;
 }

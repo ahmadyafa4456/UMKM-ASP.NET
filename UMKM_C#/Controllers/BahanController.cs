@@ -8,15 +8,20 @@ using System.Text;
 using UMKM_C_.Data;
 using UMKM_C_.Models;
 using UMKM_C_.Models.ViewModels;
+using UMKM_C_.Services;
 
 namespace UMKM_C_.Controllers
 {
     public class BahanController : Controller
     {
         private readonly ApplicationDbContext db;
-        public BahanController(ApplicationDbContext db)
+        private readonly GeneratePdfBahan generatePdfBahan;
+        private readonly GenerateExcelBahan generateExcelBahan;
+        public BahanController(ApplicationDbContext db, GeneratePdfBahan generatePdfBahan, GenerateExcelBahan generateExcelBahan)
         {
             this.db = db;
+            this.generatePdfBahan = generatePdfBahan;
+            this.generateExcelBahan = generateExcelBahan;
         }
 
         public IActionResult Index(string input, int pg = 1)
@@ -156,6 +161,20 @@ namespace UMKM_C_.Controllers
                 ModelState.AddModelError("File", "Harap unggah file.");
             }
             return View();
+        }
+
+        public IActionResult GeneratePdf()
+        {
+            List<Bahan> bahan = db.Bahan.ToList();
+            var document = generatePdfBahan.GenerateBahan(bahan);
+            return File(document, "Application/pdf", "bahan.pdf");
+        }
+
+        public async Task<IActionResult> GenerateExcel()
+        {
+            List<Bahan> bahan = await db.Bahan.ToListAsync();
+            var fileContent = generateExcelBahan.GenerateBahan(bahan);
+            return File(fileContent, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "BahanReport.xlsx");
         }
     }
 }
