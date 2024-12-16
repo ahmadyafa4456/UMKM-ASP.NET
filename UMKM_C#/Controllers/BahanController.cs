@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using System.Text;
 using UMKM_C_.Data;
+using UMKM_C_.IRepository.Repository;
 using UMKM_C_.Models;
 using UMKM_C_.Models.ViewModels;
 using UMKM_C_.Services;
@@ -14,35 +15,29 @@ namespace UMKM_C_.Controllers
 {
     public class BahanController : Controller
     {
-        private readonly ApplicationDbContext db;
-        private readonly GeneratePdfBahan generatePdfBahan;
-        private readonly GenerateExcelBahan generateExcelBahan;
-        public BahanController(ApplicationDbContext db, GeneratePdfBahan generatePdfBahan, GenerateExcelBahan generateExcelBahan)
+        private readonly IUnitOfWork bahanRepo;
+        private readonly Generate generate;
+        public BahanController(IUnitOfWork db, Generate generate)
         {
-            this.db = db;
-            this.generatePdfBahan = generatePdfBahan;
-            this.generateExcelBahan = generateExcelBahan;
+            bahanRepo = db;
+            this.generate = generate;
         }
 
-        public IActionResult Index(string input, int pg = 1)
+        public async Task<IActionResult> Index(string input, int pg = 1)
         {
-            List<Bahan> bahan = db.Bahan.ToList();
+            IQueryable<Bahan> bahan = bahanRepo.Bahan.GetAll();
+            if (!string.IsNullOrEmpty(input))
+            {
+                bahan = bahan.Where(p => p.nama.Contains(input));
+            }
             const int pageSize = 5;
             if (pg < 1) { pg = 1; }
-            int recsCount = bahan.Count();
+            int recsCount = await bahan.CountAsync();
             var pager = new Pager(recsCount, pg, pageSize);
             int recSkip = (pg - 1) * pageSize;
-            if (input != null)
-            {
-                bahan = bahan.Where(p => p.nama.Contains(input)).ToList();
-                recsCount = bahan.Count();
-                pager = new Pager(recsCount, pg, pageSize);
-                recSkip = (pg - 1) * pageSize;
-                bahan = bahan.Skip(recSkip).Take(pager.PageSize).ToList();
-            }
-            bahan = bahan.Skip(recSkip).Take(pager.PageSize).ToList();
+            List<Bahan> bahanQuery = await bahan.Skip(recSkip).Take(pageSize).ToListAsync();
             this.ViewBag.Pager = pager;
-            return View(bahan);
+            return View(bahanQuery);
         }
 
         public IActionResult Tambah()
@@ -54,7 +49,7 @@ namespace UMKM_C_.Controllers
 
         public IActionResult Edit(int id)
         {
-            Bahan bahan = db.Bahan.Where(u => u.Id == id).FirstOrDefault();
+            var bahan = bahanRepo.Bahan.Get(p => p.Id == id);
             if (bahan == null)
             {
                 return NotFound();
@@ -70,9 +65,9 @@ namespace UMKM_C_.Controllers
                 foreach (var bahan in model.Bahan)
                 {
                     bahan.created_at = DateTime.Now.ToString("yyyy-M-dd");
-                    await db.Bahan.AddAsync(bahan);
-                    await db.SaveChangesAsync();
+                    await bahanRepo.Bahan.Add(bahan);
                 }
+                await bahanRepo.Save();
                 TempData["SuccessCreate"] = "data berhasil dibuat";
                 return RedirectToAction("Index");
             }
@@ -84,8 +79,8 @@ namespace UMKM_C_.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Bahan.Update(bahan);
-                await db.SaveChangesAsync();
+                bahanRepo.Bahan.Update(bahan);
+                await bahanRepo.Save();
                 TempData["SuccessEdit"] = "data berhasil diedit";
                 return RedirectToAction("Index");
             }
@@ -95,13 +90,13 @@ namespace UMKM_C_.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            Bahan bahan = await db.Bahan.Where(u => u.Id == id).FirstOrDefaultAsync();
+            var bahan = await bahanRepo.Bahan.Get(p => p.Id == id);
             if (bahan == null)
             {
                 return NotFound();
             }
-            db.Bahan.Remove(bahan);
-            await db.SaveChangesAsync();
+            bahanRepo.Bahan.Remove(bahan);
+            await bahanRepo.Save();
             return Ok();
         }
 
@@ -116,8 +111,6 @@ namespace UMKM_C_.Controllers
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             if (file != null && file.Length > 0)
             {
-                // ambil lokasi untuk menaruh filenya
-                var UploadDirectory = $"{Directory.GetCurrentDirectory()}\\wwwroot\\Uploads";
                 // buat pengecekan file
                 var AllowExtension = ".csv";
                 // ambil nama file di request
@@ -128,19 +121,7 @@ namespace UMKM_C_.Controllers
                     ModelState.AddModelError("File", "File harus berformat .csv.");
                     return View();
                 }
-                // check apakah file ada atau tidak
-                if (!Directory.Exists(UploadDirectory))
-                {
-                    Directory.CreateDirectory(UploadDirectory);
-                }
-                // gabungkan alamat file yang tertuju dengan file request
-                var FilePath = Path.Combine(UploadDirectory, file.FileName);
-                // buat file
-                using(var Stream = new FileStream(FilePath, FileMode.Create))
-                {
-                    await file.CopyToAsync(Stream);
-                }
-                using var reader = new StreamReader(FilePath);
+                using var reader = new StreamReader(file.OpenReadStream());
                 using var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)
                 {
                     HasHeaderRecord = true,
@@ -149,11 +130,11 @@ namespace UMKM_C_.Controllers
                     IgnoreBlankLines = false
                 });
                 var records = csv.GetRecords<Bahan>().ToList();
-                foreach(var r in records)
+                foreach (var r in records)
                 {
-                    await db.Bahan.AddAsync(r);
+                    await bahanRepo.Bahan.Add(r);
                 }
-                await db.SaveChangesAsync();
+                await bahanRepo.Save();
                 return RedirectToAction("Index");
             }
             else
@@ -163,17 +144,19 @@ namespace UMKM_C_.Controllers
             return View();
         }
 
-        public IActionResult GeneratePdf()
+        public async Task<IActionResult> GeneratePdf()
         {
-            List<Bahan> bahan = db.Bahan.ToList();
-            var document = generatePdfBahan.GenerateBahan(bahan);
+            IQueryable<Bahan> query = bahanRepo.Bahan.GetAll();
+            List<Bahan> bahan = await query.ToListAsync();
+            var document = generate.pdfBahan.GenerateBahan(bahan);
             return File(document, "Application/pdf", "bahan.pdf");
         }
 
         public async Task<IActionResult> GenerateExcel()
         {
-            List<Bahan> bahan = await db.Bahan.ToListAsync();
-            var fileContent = generateExcelBahan.GenerateBahan(bahan);
+            IQueryable<Bahan> query = bahanRepo.Bahan.GetAll();
+            List<Bahan> bahan = await query.ToListAsync();
+            var fileContent = generate.excelBahan.GenerateBahan(bahan);
             return File(fileContent, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "BahanReport.xlsx");
         }
     }
