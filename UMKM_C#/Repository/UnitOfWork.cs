@@ -8,10 +8,12 @@ namespace UMKM_C_.Repository
     {
         private ApplicationDbContext db;
         public IBahanRepsitory Bahan { get; private set; }
+        public IPemasukanRepository Pemasukan { get; private set; }
         public UnitOfWork(ApplicationDbContext db)
         {
             this.db = db;
             Bahan = new BahanRepository(db);
+            Pemasukan = new PemasukanRepository(db);
         }
 
         public async Task Save()

@@ -1,27 +1,53 @@
 ﻿@{
     ViewData["Title"] = "Pemasukan Bulanan";
     ViewData["Header"] = "Pemasukan Bulanan";
+    Pager pager = new Pager();
+    int pageNo = 0;
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
 }
 @model PemasukanViewModel
 <div class="container">
     <div class="row">
+        <div class="mb-3 d-flex">
+            <a asp-controller="bahan" asp-action="ImportBahan" class="btn btn-secondary rounded ms-2">
+                <i class="fa-solid fa-upload me-2"></i>
+                Import
+            </a>
+        </div>
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex justify-content-between">
-                        @if (Model.Total != null)
-                        {
-                            <h3>Total Keseluruhan: @Model.Total</h3>
-                        }
-                        else
-                        {
-                            <h3></h3>
-                        }
+                        <div class="d-flex">
+                            <button class="btn-export rounded-start-2" id="exports2" type="button">
+                                Export
+                            </button>
+                            <a asp-controller="Pemasukan" asp-action="PemasukanBulanan"
+                                class="btn-export rounded-end-2 d-flex align-items-center">
+                                <i class="fa-solid fa-arrows-rotate"></i>
+                            </a>
+                        </div>
+                        <div>
+                            <ul class="rounded modal-export" id="modal2">
+                                <a asp-controller="bahan" asp-action="GenerateExcel">
+                                    <li class="py-1 modal-sub">Excel</li>
+                                </a>
+                                <a asp-controller="bahan" asp-action="GeneratePdf">
+                                    <li class="py-1 modal-sub">Pdf</li>
+                                </a>
+                            </ul>
+                        </div>
                         <form asp-action="PemasukanBulanan" method="get" id="dateForm">
                             <div class="input-group">
-                                <input type="text" id="customDateInput" name="date" class="border border-1 rounded-start">
+                                <input type="text" id="customDateInput" name="date"
+                                    class="border border-1 rounded-start">
                                 <span class="input-group-append">
-                                    <button type="submit" class="btn btn-primary rounded-end"><i class="fas fa-search"></i></button>
+                                    <button type="submit" class="btn btn-primary rounded-end"><i
+                                            class="fas fa-search"></i></button>
                                 </span>
                             </div>
                         </form>
@@ -39,22 +65,12 @@
                             <tbody>
                                 @if (Model.Pemasukan_bulanan != null)
                                 {
-                                    @if (Model.Pemasukan_harian != null)
+                                    @foreach (var i in Model.Pemasukan_bulanan)
                                     {
                                         <tr>
-                                            <td>@Model.Pemasukan_harian.Total</td>
-                                            <td>@Model.Pemasukan_harian.Created_at</td>
+                                            <td>@i.Pemasukan_harian.Total</td>
+                                            <td>@i.Pemasukan_harian.Created_at</td>
                                         </tr>
-                                    }
-                                    else
-                                    {
-                                        @foreach (var i in Model.Pemasukan_bulanan)
-                                        {
-                                            <tr>
-                                                <td>@i.Pemasukan_harian.Total</td>
-                                                <td>@i.Pemasukan_harian.Created_at</td>
-                                            </tr>
-                                        }
                                     }
                                 }
                                 else
@@ -67,11 +83,71 @@
                         </table>
                     </div>
                 </div>
+                <div class="card-footer d-flex justify-content-end">
+                    @if (pager.TotalPages > 0)
+                    {
+                        <ul class="pagination">
+                            @if (pager.CurrentPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-controller="Pemasukan" asp-action="PemasukanBulanan"
+                                        asp-route-pg="1">First</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" asp-controller="Pemasukan" asp-action="PemasukanBulanan"
+                                        asp-route-pg="@(pager.CurrentPage - 1)">Previous</a>
+                                </li>
+                            }
+                            @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+                            {
+                                <li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
+                                    <a class="page-link @(pge == pager.CurrentPage ? "text-white" : "")"
+                                        asp-controller="Pemasukan" asp-action="PemasukanBulanan" asp-route-pg="@pge">@pge</a>
+                                </li>
+                            }
+                            @if (pager.CurrentPage < pager.TotalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-controller="Pemasukan" asp-action="PemasukanBulanan"
+                                        asp-route-pg="@(pager.CurrentPage + 1)">Next</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" asp-controller="Pemasukan" asp-action="PemasukanBulanan"
+                                        asp-route-pg="@(pager.TotalPages)">Last</a>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
             </div>
         </div>
     </div>
 </div>
 <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const modal = document.getElementById("modal2");
+        const exports = document.getElementById("exports2");
+
+        exports.addEventListener("click", () => {
+            if (modal.style.display === "block") {
+                modal.style.display = "none";
+                modal.style.opacity = "1";
+                modal.style.top = "23%";
+            } else {
+                modal.style.display = "block";
+                modal.style.opacity = "1";
+            }
+        });
+
+        document.addEventListener("click", (event) => {
+            if (!modal.contains(event.target) && event.target !== exports) {
+                if (modal.style.display === "block") {
+                    modal.style.display = "none";
+                    modal.style.opacity = "1";
+                }
+            }
+        });
+    });
     flatpickr("#customDateInput", {
         dateFormat: "Y-m-d",
         placeholder: ""
