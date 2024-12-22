@@ -1,0 +1,38 @@
+@{
+    ViewData["Title"] = "Import Pemasukan";
+    ViewData["Header"] = "Import Pemasukan";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <form asp-controller="Pemasukan" asp-action="ImportPemasukan" method="post"
+                        enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-12" id="input-group">
+                                <div class="form-group p-3 rounded-2 mb-3">
+                                    <div class="input-group mb-3">
+                                        <input type="file" class="form-control" id="inputGroupFile02" name="file">
+                                    </div>
+                                    @Html.ValidationMessage("File", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-12 pt-2">
+                                <div class="d-flex flex-row-reverse">
+                                    <a asp-controller="Pemasukan" asp-action="PemasukanBulanan"
+                                        class="btn btn-primary btn-round ms-1">
+                                        Kembali
+                                    </a>
+                                    <button class="btn btn-primary btn-round ms-1" type="submit">
+                                        Import Pemasukan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

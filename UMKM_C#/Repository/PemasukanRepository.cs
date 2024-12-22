@@ -29,6 +29,26 @@ namespace UMKM_C_.Repository
             await db.SaveChangesAsync();
         }
 
+        public async Task AddImportPemasukan(List<Pemasukan_harian> harian)
+        {
+            try
+            {
+                await db.Database.BeginTransactionAsync();
+                foreach (var r in harian)
+                {
+                    await dbSetHarian.AddAsync(r);
+                    await db.SaveChangesAsync();
+                    await AddPemasukanBulanan(r.Id);
+                }
+                await db.Database.CommitTransactionAsync();
+            }
+            catch (Exception)
+            {
+                await db.Database.RollbackTransactionAsync();
+                throw;
+            }
+        }
+
         public async Task AddPemasukanHarian(Pemasukan_harian harian)
         {
             try

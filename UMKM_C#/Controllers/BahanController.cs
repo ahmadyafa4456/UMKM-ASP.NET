@@ -127,7 +127,10 @@ namespace UMKM_C_.Controllers
                     HasHeaderRecord = true,
                     HeaderValidated = null,
                     MissingFieldFound = null,
-                    IgnoreBlankLines = false
+                    IgnoreBlankLines = false,
+                    Delimiter = ",",
+                    DetectDelimiter = false,
+                    TrimOptions = TrimOptions.Trim
                 });
                 var records = csv.GetRecords<Bahan>().ToList();
                 foreach (var r in records)

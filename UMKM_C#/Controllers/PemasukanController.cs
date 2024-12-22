@@ -1,18 +1,25 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Globalization;
+using System.Text;
+using CsvHelper;
+using CsvHelper.Configuration;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UMKM_C_.Data;
 using UMKM_C_.IRepository.Repository;
 using UMKM_C_.Models;
 using UMKM_C_.Models.ViewModels;
+using UMKM_C_.Services;
 
 namespace UMKM_C_.Controllers
 {
     public class PemasukanController : Controller
     {
         private readonly IUnitOfWork pemasukanRepo;
-        public PemasukanController(IUnitOfWork db)
+        private readonly Generate generate;
+        public PemasukanController(IUnitOfWork db, Generate generate)
         {
             pemasukanRepo = db;
+            this.generate = generate;
         }
 
         public async Task<IActionResult> Index()
@@ -94,6 +101,59 @@ namespace UMKM_C_.Controllers
                 data = pemasukanBulanan,
                 totalKeseluruhan = total
             });
+        }
+
+        public async Task<IActionResult> GenerateExcel()
+        {
+            IQueryable<Pemasukan_bulanan> bulanan = pemasukanRepo.Pemasukan.GetAllPemasukanBulanan();
+            List<Pemasukan_bulanan> data = await bulanan.ToListAsync();
+            var file = generate.excelPemasukan.GeneratePemasukan(data);
+            return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "PemasukanReport.xlsx");
+        }
+
+        public async Task<IActionResult> GeneratePdf()
+        {
+            IQueryable<Pemasukan_bulanan> bulanan = pemasukanRepo.Pemasukan.GetAllPemasukanBulanan();
+            List<Pemasukan_bulanan> data = await bulanan.ToListAsync();
+            var file = generate.pdfPemasukan.GeneratePemasukan(data);
+            return File(file, "Application/pdf", "Pemasukan.pdf");
+        }
+
+        public IActionResult ImportPemasukan()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ImportPemasukan(IFormFile file)
+        {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            if (file != null && file.Length > 0)
+            {
+                var allowExtension = ".csv";
+                var fileExtension = Path.GetExtension(file.FileName).ToLower();
+                if (!allowExtension.Contains(fileExtension))
+                {
+                    ModelState.AddModelError("File", "file harus berformat csv");
+                    return View();
+                }
+                using var reader = new StreamReader(file.OpenReadStream());
+                using var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)
+                {
+                    HasHeaderRecord = true,
+                    HeaderValidated = null,
+                    MissingFieldFound = null,
+                    IgnoreBlankLines = false
+                });
+                var record = csv.GetRecords<Pemasukan_harian>().ToList();
+                await pemasukanRepo.Pemasukan.AddImportPemasukan(record);
+                return RedirectToAction("PemasukanBulanan");
+            }
+            else
+            {
+                ModelState.AddModelError("File", "file tidak boleh kosong");
+            }
+            return View();
         }
     }
 }

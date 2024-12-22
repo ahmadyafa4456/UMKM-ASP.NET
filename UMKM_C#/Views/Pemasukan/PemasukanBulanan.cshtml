@@ -13,7 +13,7 @@
 <div class="container">
     <div class="row">
         <div class="mb-3 d-flex">
-            <a asp-controller="bahan" asp-action="ImportBahan" class="btn btn-secondary rounded ms-2">
+            <a asp-controller="Pemasukan" asp-action="ImportPemasukan" class="btn btn-secondary rounded ms-2">
                 <i class="fa-solid fa-upload me-2"></i>
                 Import
             </a>
@@ -33,10 +33,10 @@
                         </div>
                         <div>
                             <ul class="rounded modal-export" id="modal2">
-                                <a asp-controller="bahan" asp-action="GenerateExcel">
+                                <a asp-controller="Pemasukan" asp-action="GenerateExcel">
                                     <li class="py-1 modal-sub">Excel</li>
                                 </a>
-                                <a asp-controller="bahan" asp-action="GeneratePdf">
+                                <a asp-controller="Pemasukan" asp-action="GeneratePdf">
                                     <li class="py-1 modal-sub">Pdf</li>
                                 </a>
                             </ul>
@@ -132,10 +132,11 @@
             if (modal.style.display === "block") {
                 modal.style.display = "none";
                 modal.style.opacity = "1";
-                modal.style.top = "23%";
+                modal.style.top = "20%";
             } else {
                 modal.style.display = "block";
                 modal.style.opacity = "1";
+                modal.style.top = "20%";
             }
         });
 

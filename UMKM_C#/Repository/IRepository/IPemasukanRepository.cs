@@ -7,6 +7,7 @@ namespace UMKM_C_.IRepository.Repository
     {
         Task AddPemasukanHarian(Pemasukan_harian harian);
         Task AddPemasukanBulanan(int id);
+        Task AddImportPemasukan(List<Pemasukan_harian> harian);
         Task<Pemasukan_harian> GetPemasukanHarian(Expression<Func<Pemasukan_harian, bool>> filter);
         IQueryable<Pemasukan_harian> GetAllPemasukanHarian();
         IQueryable<Pemasukan_bulanan> GetAllPemasukanBulanan();
