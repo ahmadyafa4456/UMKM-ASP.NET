@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UMKM_C_.Data;
+using UMKM_C_.IRepository.Repository;
 using UMKM_C_.Models;
 using UMKM_C_.Models.ViewModels;
 
@@ -8,10 +9,10 @@ namespace UMKM_C_.Controllers
 {
     public class PengeluaranController : Controller
     {
-        private readonly ApplicationDbContext db;
-        public PengeluaranController(ApplicationDbContext db)
+        private readonly IUnitOfWork pengeluaran;
+        public PengeluaranController(IUnitOfWork db)
         {
-            this.db = db;
+            pengeluaran = db;
         }
 
         public IActionResult Index()
@@ -36,11 +37,11 @@ namespace UMKM_C_.Controllers
             int recsCount = pengeluaran_bulanan.Count();
             var pager = new Pager(recsCount, pg, pageSize);
             int recSkip = (pg - 1) * pageSize;
-            if(date != null)
+            if (date != null)
             {
-                 recsCount = pengeluaran_harian.Count();
-                 pager = new Pager(recsCount, pg, pageSize);
-                 recSkip = (pg - 1) * pageSize;
+                recsCount = pengeluaran_harian.Count();
+                pager = new Pager(recsCount, pg, pageSize);
+                recSkip = (pg - 1) * pageSize;
             }
             var pengeluaran = new PengeluaranViewModel()
             {
@@ -59,22 +60,11 @@ namespace UMKM_C_.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Tambah(TambahPengeluaranViewModel model)
+        public async Task<IActionResult> Tambah(List<Pengeluaran_harian> data)
         {
             if (ModelState.IsValid)
             {
-                foreach (var bahan in model.bahan)
-                {
-                    Pengeluaran_bulanan pengeluaran = new Pengeluaran_bulanan();
-                    bahan.Created_at = DateTime.Now.ToString(format: "yyyy-MM-dd");
-                    await db.Pengeluaran_harian.AddAsync(bahan);
-                    await db.SaveChangesAsync();
-
-                    pengeluaran.HarianId = bahan.Id;
-                    pengeluaran.Bulan = DateTime.Now.Month;
-                    await db.Pengeluaran_bulanan.AddAsync(pengeluaran);
-                    await db.SaveChangesAsync();
-                }
+                await pengeluaran.Pengeluaran.AddPengeluaran(data);
                 return RedirectToAction("Index");
             }
             return View();

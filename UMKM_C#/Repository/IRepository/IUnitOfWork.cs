@@ -4,6 +4,7 @@ namespace UMKM_C_.IRepository.Repository
     {
         IBahanRepsitory Bahan { get; }
         IPemasukanRepository Pemasukan { get; }
+        IPengeluaranRepository Pengeluaran { get; }
         Task Save();
     }
 }
