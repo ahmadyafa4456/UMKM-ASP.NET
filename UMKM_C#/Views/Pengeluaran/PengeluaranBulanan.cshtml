@@ -10,18 +10,45 @@
         pageNo = pager.CurrentPage;
     }
 }
-@model PengeluaranViewModel
+@model List<Pengeluaran_bulanan>
 <div class="container">
     <div class="row">
+        <div class="mb-3 d-flex">
+            <a asp-controller="Pengeluaran" asp-action="ImportPengeluaran" class="btn btn-secondary rounded ms-2">
+                <i class="fa-solid fa-upload me-2"></i>
+                Import
+            </a>
+        </div>
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <div class="d-flex justify-content-end">
+                    <div class="d-flex justify-content-between">
+                        <div class="d-flex">
+                            <button class="btn-export rounded-start-2" id="exports3" type="button">
+                                Export
+                            </button>
+                            <a asp-controller="Pengeluaran" asp-action="PengeluaranBulanan"
+                                class="btn-export rounded-end-2 d-flex align-items-center">
+                                <i class="fa-solid fa-arrows-rotate"></i>
+                            </a>
+                        </div>
+                        <div>
+                            <ul class="rounded modal-export" id="modal3">
+                                <a asp-controller="Pengeluaran" asp-action="GenerateExcel">
+                                    <li class="py-1 modal-sub">Excel</li>
+                                </a>
+                                <a asp-controller="Pengeluaran" asp-action="GeneratePdf">
+                                    <li class="py-1 modal-sub">Pdf</li>
+                                </a>
+                            </ul>
+                        </div>
                         <form asp-action="PengeluaranBulanan" method="get" id="dateForm">
                             <div class="input-group">
-                                <input type="text" id="customDateInput" name="date" class="border border-1 rounded-start">
+                                <input type="text" id="customDateInput" name="date"
+                                    class="border border-1 rounded-start">
                                 <span class="input-group-append">
-                                    <button type="submit" class="btn btn-primary rounded-end"><i class="fas fa-search"></i></button>
+                                    <button type="submit" class="btn btn-primary rounded-end"><i
+                                            class="fas fa-search"></i></button>
                                 </span>
                             </div>
                         </form>
@@ -40,32 +67,19 @@
                             </thead>
                             <tbody>
 
-                                @if (Model.Pengeluaran_Bulanan != null && Model.Pengeluaran_Bulanan.Count > 0)
+                                @if (Model != null && Model.Count > 0)
                                 {
-                                    @if (Model.Pengeluaran_Harian != null && Model.Pengeluaran_Harian.Count > 0)
+
+                                    @foreach (var i in Model)
                                     {
-                                        @foreach (var i in Model.Pengeluaran_Harian)
-                                        {
-                                            <tr>
-                                                <td>@i.Nama</td>
-                                                <td>@i.Harga</td>
-                                                <td>@i.Jumlah</td>
-                                                <td>@i.Created_at</td>
-                                            </tr>
-                                        }
+                                        <tr>
+                                            <td>@i.Pengeluaran_harian.Nama</td>
+                                            <td>@i.Pengeluaran_harian.Harga</td>
+                                            <td>@i.Pengeluaran_harian.Jumlah</td>
+                                            <td>@i.Pengeluaran_harian.Created_at</td>
+                                        </tr>
                                     }
-                                    else
-                                    {
-                                        @foreach (var i in Model.Pengeluaran_Bulanan)
-                                        {
-                                            <tr>
-                                                <td>@i.Pengeluaran_harian.Nama</td>
-                                                <td>@i.Pengeluaran_harian.Harga</td>
-                                                <td>@i.Pengeluaran_harian.Jumlah</td>
-                                                <td>@i.Pengeluaran_harian.Created_at</td>
-                                            </tr>
-                                        }
-                                    }
+
                                 }
                                 else
                                 {
@@ -85,25 +99,31 @@
                             @if (pager.CurrentPage > 1)
                             {
                                 <li class="page-item">
-                                    <a class="page-link" asp-controller="Pengeluaran" asp-action="PengeluaranBulanan" asp-route-pg="1">First</a>
+                                    <a class="page-link" asp-controller="Pengeluaran" asp-action="PengeluaranBulanan"
+                                        asp-route-pg="1">First</a>
                                 </li>
                                 <li class="page-item">
-                                    <a class="page-link" asp-controller="Pengeluaran" asp-action="PengeluaranBulanan" asp-route-pg="@(pager.CurrentPage - 1)">Previous</a>
+                                    <a class="page-link" asp-controller="Pengeluaran" asp-action="PengeluaranBulanan"
+                                        asp-route-pg="@(pager.CurrentPage - 1)">Previous</a>
                                 </li>
                             }
                             @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
                             {
                                 <li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
-                                    <a class="page-link @(pge == pager.CurrentPage ? "text-white" : "")" asp-controller="Pengeluaran" asp-action="PengeluaranBulanan" asp-route-pg="@pge">@pge</a>
+                                    <a class="page-link @(pge == pager.CurrentPage ? "text-white" : "")"
+                                        asp-controller="Pengeluaran" asp-action="PengeluaranBulanan"
+                                        asp-route-pg="@pge">@pge</a>
                                 </li>
                             }
                             @if (pager.CurrentPage < pager.TotalPages)
                             {
                                 <li class="page-item">
-                                    <a class="page-link" asp-controller="Pengeluaran" asp-action="PengeluaranBulanan" asp-route-pg="@(pager.CurrentPage + 1)">Next</a>
+                                    <a class="page-link" asp-controller="Pengeluaran" asp-action="PengeluaranBulanan"
+                                        asp-route-pg="@(pager.CurrentPage + 1)">Next</a>
                                 </li>
                                 <li class="page-item">
-                                    <a class="page-link" asp-controller="Pengeluaran" asp-action="PengeluaranBulanan" asp-route-pg="@(pager.TotalPages)">Last</a>
+                                    <a class="page-link" asp-controller="Pengeluaran" asp-action="PengeluaranBulanan"
+                                        asp-route-pg="@(pager.TotalPages)">Last</a>
                                 </li>
                             }
                         </ul>
@@ -114,6 +134,31 @@
     </div>
 </div>
 <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const modal = document.getElementById("modal3");
+        const exports = document.getElementById("exports3");
+
+        exports.addEventListener("click", () => {
+            if (modal.style.display === "block") {
+                modal.style.display = "none";
+                modal.style.opacity = "1";
+                modal.style.top = "13%";
+            } else {
+                modal.style.display = "block";
+                modal.style.opacity = "1";
+                modal.style.top = "13%";
+            }
+        });
+
+        document.addEventListener("click", (event) => {
+            if (!modal.contains(event.target) && event.target !== exports) {
+                if (modal.style.display === "block") {
+                    modal.style.display = "none";
+                    modal.style.opacity = "1";
+                }
+            }
+        });
+    });
     flatpickr("#customDateInput", {
         dateFormat: "Y-m-d",
         placeholder: ""

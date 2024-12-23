@@ -30,6 +30,21 @@ namespace UMKM_C_.Repository
             await db.SaveChangesAsync();
         }
 
+        // public async Task AddImportPengeluaran(List<Pengeluaran_harian> data)
+        // {
+        //     try
+        //     {
+        //         await db.Database.BeginTransactionAsync();
+        //         foreach(var i in data)
+        //         {
+        //             i.Created_at = DateTime.Now.ToString(format: "yyyy-MM-dd");
+        //             await db.AddAsync(i);
+        //             await db.SaveChangesAsync();
+        //             await AddPengeluaranBulanan()
+        //         }
+        //     }
+        // }
+
         public async Task AddPengeluaran(List<Pengeluaran_harian> data)
         {
             try
@@ -37,9 +52,10 @@ namespace UMKM_C_.Repository
                 await db.Database.BeginTransactionAsync();
                 foreach (var i in data)
                 {
+                    i.Created_at = DateTime.Now.ToString(format: "yyyy-MM-dd");
                     await db.AddAsync(i);
                     await db.SaveChangesAsync();
-                    AddPengeluaranBulanan(i.Id);
+                    await AddPengeluaranBulanan(i.Id);
                 }
                 await db.Database.CommitTransactionAsync();
             }
@@ -48,6 +64,12 @@ namespace UMKM_C_.Repository
                 await db.Database.RollbackTransactionAsync();
                 throw;
             }
+        }
+
+        public IQueryable<Pengeluaran_bulanan> GetPengeluaranBulanan()
+        {
+            var month = DateTime.UtcNow.Month;
+            return dbSetBulanan.Include(p => p.Pengeluaran_harian).AsQueryable();
         }
     }
 }

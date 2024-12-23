@@ -2,7 +2,7 @@
     ViewData["Title"] = "Info Pengeluaran";
     ViewData["Header"] = "Beli Bahan";
 }
-@model List<Pengeluaran_harian>
+@model PengeluaranViewModel
 <div class="container">
     <div class="row">
         <div class="col-12">
@@ -23,18 +23,18 @@
                                     <div class="d-flex justify-content-between">
                                         <h3>Bahan</h3>
                                     </div>
-                                    <label asp-for="@Model[0].Nama">Nama Bahan</label>
-                                    <input type="text" class="form-control" asp-for="@Model[0].Nama"
+                                    <label asp-fodata.Nama">Nama Bahan</label>
+                                    <input type="text" class="form-control" asp-for="data[0].Nama"
                                         placeholder="Nama Bahan" />
-                                    <span asp-validation-for="@Model[0].Nama" class="text-danger"></span>
-                                    <label asp-for="@Model[0].Jumlah">Jumlah</label>
-                                    <input type="number" class="form-control" asp-for="@Model[0].Jumlah"
+                                    <span asp-validation-for="data[0].Nama" class="text-danger"></span>
+                                    <label asp-for="data[0].Jumlah">Jumlah</label>
+                                    <input type="number" class="form-control" asp-for="data[0].Jumlah"
                                         placeholder="Jumlah Bahan" />
-                                    <span asp-validation-for="@Model[0].Jumlah" class="text-danger"></span>
-                                    <label asp-for="@Model[0].Harga">Harga</label>
-                                    <input type="number" class="form-control" asp-for="@Model[0].Harga"
+                                    <span asp-validation-for="data[0].Jumlah" class="text-danger"></span>
+                                    <label asp-for="data[0].Harga">Harga</label>
+                                    <input type="number" class="form-control" asp-for="data[0].Harga"
                                         placeholder="Harga Bahan" />
-                                    <span asp-validation-for="@Model[0].Harga" class="text-danger"></span>
+                                    <span asp-validation-for="data[0].Harga" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-12 pt-2">
@@ -72,17 +72,17 @@
                                             <label>Nama Bahan</label>
                                             <input type="text"
                                                    class="form-control"
-                                                       name="bahan[${dataCount}].Nama"
+                                                    name="data[${dataCount}].Nama"
                                                    placeholder="Nama Bahan" />
                                             <label>Jumlah</label>
                                             <input type="number"
                                                    class="form-control"
-                                                   name="bahan[${dataCount}].Jumlah"
+                                                   name="data[${dataCount}].Jumlah"
                                                    placeholder="Jumlah Bahan" />
                                             <label>Harga</label>
                                             <input type="number"
                                                    class="form-control"
-                                                      name="bahan[${dataCount}].Harga"
+                                                      name="data[${dataCount}].Harga"
                                                    placeholder="Harga Bahan" />
                                         </div>`;
         input_group.insertAdjacentHTML("beforeend", addrow);

@@ -10,9 +10,9 @@ namespace UMKM_C_.Models
         [StringLength(50)]
         public string Nama { get; set; }
         [Required(ErrorMessage = "harga tidak boleh kosong")]
-        public int? Harga { get; set; }
+        public int Harga { get; set; }
         [Required(ErrorMessage = "jumlah tidak boleh kosong")]
-        public int? Jumlah { get; set; }
+        public int Jumlah { get; set; }
         public string? Created_at { get; set; }
         public string? Updated_at { get; set; }
         [ValidateNever]

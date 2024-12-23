@@ -2,7 +2,6 @@
 {
     public class PengeluaranViewModel
     {
-        public List<Pengeluaran_harian> Pengeluaran_Harian { get; set; } = new List<Pengeluaran_harian>();
-        public List<Pengeluaran_bulanan> Pengeluaran_Bulanan { get; set; } = new List<Pengeluaran_bulanan>();
+        public List<Pengeluaran_harian> data { get; set; } = new List<Pengeluaran_harian>();
     }
 }

@@ -28,19 +28,24 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if(Model != null && Model.Count > 0) {
-                                    int n = 1;
-                                    @foreach(var i in Model){
+                                @if (Model != null && Model.Count > 0)
+                                {
+                                    int no = 1;
+                                    foreach (var i in Model)
+                                    {
                                         <tr>
-                                            <td>@n</td>
+                                            <td>@no</td>
                                             <td>@i.Nama</td>
                                             <td>@i.Harga</td>
                                             <td>@i.Jumlah</td>
                                             <td>@i.Created_at</td>
                                         </tr>
-                                        n++;
+                                        no++;
                                     }
-                                }else{
+
+                                }
+                                else
+                                {
                                     <tr>
                                         <td colspan="4" class="text-center">Tidak ada Pengeluaran</td>
                                     </tr>

@@ -1,73 +1,118 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Globalization;
+using CsvHelper;
+using CsvHelper.Configuration;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UMKM_C_.Data;
 using UMKM_C_.IRepository.Repository;
 using UMKM_C_.Models;
 using UMKM_C_.Models.ViewModels;
+using UMKM_C_.Services;
 
 namespace UMKM_C_.Controllers
 {
     public class PengeluaranController : Controller
     {
-        private readonly IUnitOfWork pengeluaran;
-        public PengeluaranController(IUnitOfWork db)
+        private readonly IUnitOfWork db;
+        private readonly Generate generate;
+        public PengeluaranController(IUnitOfWork db, Generate generate)
         {
-            pengeluaran = db;
+            this.db = db;
+            this.generate = generate;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var today = DateTime.Now.ToString(format: "yyyy-MM-dd");
-            List<Pengeluaran_harian> pengeluaran_harian = db.Pengeluaran_harian.Where(p => p.Created_at == today).ToList();
+            IQueryable<Pengeluaran_harian> harian = db.Pengeluaran.GetAll();
+            List<Pengeluaran_harian> pengeluaran_harian = await harian.Where(p => p.Created_at == today).ToListAsync();
             return View(pengeluaran_harian);
         }
 
-        public IActionResult PengeluaranBulanan(string date, int pg = 1)
+        public async Task<IActionResult> PengeluaranBulanan(string date, int pg = 1)
         {
-            var month = DateTime.Now.Month;
-            var pengeluaran_bulanan = db.Pengeluaran_bulanan
-                .Include(p => p.Pengeluaran_harian)
-                .Where(p => p.Bulan == month)
-                .ToList();
-            var pengeluaran_harian = db.Pengeluaran_harian
-                .Where(p => p.Created_at == date)
-                .ToList();
+            IQueryable<Pengeluaran_bulanan> bulanan = db.Pengeluaran.GetPengeluaranBulanan();
+            if (!string.IsNullOrEmpty(date))
+            {
+                bulanan = bulanan.Where(p => p.Pengeluaran_harian.Created_at == date);
+            }
             const int pageSize = 5;
             if (pg < 1) { pg = 1; };
-            int recsCount = pengeluaran_bulanan.Count();
+            int recsCount = await bulanan.CountAsync();
             var pager = new Pager(recsCount, pg, pageSize);
             int recSkip = (pg - 1) * pageSize;
-            if (date != null)
-            {
-                recsCount = pengeluaran_harian.Count();
-                pager = new Pager(recsCount, pg, pageSize);
-                recSkip = (pg - 1) * pageSize;
-            }
-            var pengeluaran = new PengeluaranViewModel()
-            {
-                Pengeluaran_Bulanan = pengeluaran_bulanan.Skip(recSkip).Take(pager.PageSize).ToList(),
-                Pengeluaran_Harian = pengeluaran_harian.Skip(recSkip).Take(pager.PageSize).ToList()
-            };
+            List<Pengeluaran_bulanan> pengeluaran = await bulanan.Skip(recSkip).Take(pageSize).ToListAsync();
             this.ViewBag.Pager = pager;
             return View(pengeluaran);
         }
 
         public IActionResult Tambah()
         {
-            var viewModel = new TambahPengeluaranViewModel();
-            viewModel.bahan.Add(new Pengeluaran_harian());
-            return View(viewModel);
+            return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Tambah(List<Pengeluaran_harian> data)
+        public async Task<IActionResult> Tambah(PengeluaranViewModel model)
         {
             if (ModelState.IsValid)
             {
-                await pengeluaran.Pengeluaran.AddPengeluaran(data);
+                var pengeluaran_harian = model.data.ToList();
+                await db.Pengeluaran.AddPengeluaran(pengeluaran_harian);
                 return RedirectToAction("Index");
             }
             return View();
+        }
+
+        public IActionResult ImportPengeluaran()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ImportPengeluaran(IFormFile file)
+        {
+            if (file != null && file.Length > 0)
+            {
+                var allowExtension = ".csv";
+                var fileExtension = Path.GetExtension(file.FileName).ToLower();
+                if (!allowExtension.Contains(fileExtension))
+                {
+                    ModelState.AddModelError("File", "file harus berformat csv");
+                    return View();
+                }
+                using var reader = new StreamReader(file.OpenReadStream());
+                using var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)
+                {
+                    HasHeaderRecord = true,
+                    HeaderValidated = null,
+                    MissingFieldFound = null,
+                    IgnoreBlankLines = false
+                });
+                var record = csv.GetRecords<Pengeluaran_harian>().ToList();
+                await db.Pengeluaran.AddPengeluaran(record);
+                return RedirectToAction("PengeluaranBulanan");
+            }
+            else
+            {
+                ModelState.AddModelError("File", "file tidak boleh kosong");
+            }
+            return View();
+        }
+
+        public async Task<IActionResult> GenerateExcel()
+        {
+            IQueryable<Pengeluaran_bulanan> data = db.Pengeluaran.GetPengeluaranBulanan();
+            List<Pengeluaran_bulanan> bulanan = await data.ToListAsync();
+            var file = generate.excelPengeluaran.GeneratePengeluaran(bulanan);
+            return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "PengeluaranReport.xlsx");
+        }
+
+        public async Task<IActionResult> GeneratePdf()
+        {
+            IQueryable<Pengeluaran_bulanan> data = db.Pengeluaran.GetPengeluaranBulanan();
+            List<Pengeluaran_bulanan> bulanan = await data.ToListAsync();
+            var file = generate.pdfPengeluaran.GeneratePengeluaran(bulanan);
+            return File(file, "Application/pdf", "Pengeluaran.pdf");
         }
     }
 }
