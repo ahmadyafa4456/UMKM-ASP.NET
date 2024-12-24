@@ -1,6 +1,7 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using ExcelDataReader;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
@@ -13,6 +14,7 @@ using UMKM_C_.Services;
 
 namespace UMKM_C_.Controllers
 {
+    [Authorize]
     public class BahanController : Controller
     {
         private readonly IUnitOfWork bahanRepo;

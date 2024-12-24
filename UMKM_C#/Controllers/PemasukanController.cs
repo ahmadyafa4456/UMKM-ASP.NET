@@ -2,6 +2,7 @@
 using System.Text;
 using CsvHelper;
 using CsvHelper.Configuration;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UMKM_C_.Data;
@@ -12,6 +13,7 @@ using UMKM_C_.Services;
 
 namespace UMKM_C_.Controllers
 {
+    [Authorize]
     public class PemasukanController : Controller
     {
         private readonly IUnitOfWork pemasukanRepo;

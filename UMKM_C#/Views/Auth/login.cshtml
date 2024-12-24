@@ -1,5 +1,5 @@
-@* @model LoginVM *@
-
+@using UMKM_C_.ViewModels.Models;
+@model LoginViewModel;
 @{
     Layout = null;
 }
@@ -18,22 +18,18 @@
             <div class="d-flex justify-content-center p-1">
                 <p class="fs-5 fw-bold">Login</p>
             </div>
-            <form method="post">
+            <form method="post" asp-controller="Auth" asp-action="Login">
+                @Html.ValidationMessage("Error", new { @class = "text-danger" })
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="mb-3">
                     <label class="form-label">Name</label>
-                    <input class="form-control">
-                    <span class="text-danger"></span>
+                    <input class="form-control" asp-for="@Model.UserName">
+                    <span asp-validation-for="UserName" class="text-danger"></span>
                 </div>
-                @* <div class="mb-3">
-                    <label asp-for="Email" class="form-label">Email</label>
-                    <input asp-for="Email" type="email" class="form-control">
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div> *@
                 <div class="mb-3">
                     <label>Password</label>
-                    <input class="form-control" type="password">
-                    <span class="text-danger"></span>
+                    <input class="form-control" type="password" asp-for="@Model.Password">
+                    <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
                 <div class="">
                     <button type="submit" class="btn btn-dark px-4 w100">Login</button>
