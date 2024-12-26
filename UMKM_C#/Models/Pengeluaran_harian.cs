@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
 
-namespace UMKM_C_.Models
+namespace UMKM.Models
 {
     public class Pengeluaran_harian
     {

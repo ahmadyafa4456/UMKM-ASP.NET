@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 
-namespace UMKM_C_.IRepository.Repository
+namespace UMKM.IRepository.Repository
 {
     public interface IRepository<T> where T : class
     {

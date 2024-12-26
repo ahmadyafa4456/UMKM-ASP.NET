@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using UMKM_C_.ViewModels.Models;
+using UMKM.ViewModels.Models;
 
-namespace UMKM_C_.Controllers
+namespace UMKM.Controllers
 {
     public class AuthController : Controller
     {

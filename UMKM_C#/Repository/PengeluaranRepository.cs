@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using UMKM_C_.Data;
-using UMKM_C_.IRepository.Repository;
-using UMKM_C_.Models;
+using UMKM.Data;
+using UMKM.IRepository.Repository;
+using UMKM.Models;
 
-namespace UMKM_C_.Repository
+namespace UMKM.Repository
 {
     public class PengeluaranRepository : Repository<Pengeluaran_harian>, IPengeluaranRepository
     {

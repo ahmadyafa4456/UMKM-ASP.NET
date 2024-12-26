@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
-using UMKM_C_.Models;
+using UMKM.Models;
 
-namespace UMKM_C_.IRepository.Repository
+namespace UMKM.IRepository.Repository
 {
     public interface IPemasukanRepository
     {

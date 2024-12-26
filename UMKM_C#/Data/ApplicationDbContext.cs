@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using UMKM_C_.Models;
+using UMKM.Models;
 
-namespace UMKM_C_.Data
+namespace UMKM.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {

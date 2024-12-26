@@ -1,4 +1,4 @@
-namespace UMKM_C_.Services
+namespace UMKM.Services
 {
     public class Generate
     {

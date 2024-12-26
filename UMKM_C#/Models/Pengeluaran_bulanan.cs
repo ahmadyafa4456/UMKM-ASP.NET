@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace UMKM_C_.Models
+namespace UMKM.Models
 {
     public class Pengeluaran_bulanan
     {

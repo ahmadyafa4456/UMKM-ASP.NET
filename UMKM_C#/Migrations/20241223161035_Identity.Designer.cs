@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using UMKM_C_.Data;
+using UMKM.Data;
 
 #nullable disable
 
-namespace UMKM_C_.Migrations
+namespace UMKM.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20241223161035_Identity")]
@@ -221,7 +221,7 @@ namespace UMKM_C_.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("UMKM_C_.Models.Bahan", b =>
+            modelBuilder.Entity("UMKM.Models.Bahan", b =>
                 {
                     b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
@@ -251,7 +251,7 @@ namespace UMKM_C_.Migrations
                     b.ToTable("Bahan");
                 });
 
-            modelBuilder.Entity("UMKM_C_.Models.Pemasukan_bulanan", b =>
+            modelBuilder.Entity("UMKM.Models.Pemasukan_bulanan", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -272,7 +272,7 @@ namespace UMKM_C_.Migrations
                     b.ToTable("Pemasukan_bulanan");
                 });
 
-            modelBuilder.Entity("UMKM_C_.Models.Pemasukan_harian", b =>
+            modelBuilder.Entity("UMKM.Models.Pemasukan_harian", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -294,7 +294,7 @@ namespace UMKM_C_.Migrations
                     b.ToTable("Pemasukan_harian");
                 });
 
-            modelBuilder.Entity("UMKM_C_.Models.Pengeluaran_bulanan", b =>
+            modelBuilder.Entity("UMKM.Models.Pengeluaran_bulanan", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -315,7 +315,7 @@ namespace UMKM_C_.Migrations
                     b.ToTable("Pengeluaran_bulanan");
                 });
 
-            modelBuilder.Entity("UMKM_C_.Models.Pengeluaran_harian", b =>
+            modelBuilder.Entity("UMKM.Models.Pengeluaran_harian", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -396,9 +396,9 @@ namespace UMKM_C_.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("UMKM_C_.Models.Pemasukan_bulanan", b =>
+            modelBuilder.Entity("UMKM.Models.Pemasukan_bulanan", b =>
                 {
-                    b.HasOne("UMKM_C_.Models.Pemasukan_harian", "Pemasukan_harian")
+                    b.HasOne("UMKM.Models.Pemasukan_harian", "Pemasukan_harian")
                         .WithMany("Pemasukan_bulanan")
                         .HasForeignKey("HarianId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -407,9 +407,9 @@ namespace UMKM_C_.Migrations
                     b.Navigation("Pemasukan_harian");
                 });
 
-            modelBuilder.Entity("UMKM_C_.Models.Pengeluaran_bulanan", b =>
+            modelBuilder.Entity("UMKM.Models.Pengeluaran_bulanan", b =>
                 {
-                    b.HasOne("UMKM_C_.Models.Pengeluaran_harian", "Pengeluaran_harian")
+                    b.HasOne("UMKM.Models.Pengeluaran_harian", "Pengeluaran_harian")
                         .WithMany("Pengeluaran_bulanan")
                         .HasForeignKey("HarianId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -418,12 +418,12 @@ namespace UMKM_C_.Migrations
                     b.Navigation("Pengeluaran_harian");
                 });
 
-            modelBuilder.Entity("UMKM_C_.Models.Pemasukan_harian", b =>
+            modelBuilder.Entity("UMKM.Models.Pemasukan_harian", b =>
                 {
                     b.Navigation("Pemasukan_bulanan");
                 });
 
-            modelBuilder.Entity("UMKM_C_.Models.Pengeluaran_harian", b =>
+            modelBuilder.Entity("UMKM.Models.Pengeluaran_harian", b =>
                 {
                     b.Navigation("Pengeluaran_bulanan");
                 });

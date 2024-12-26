@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using UMKM_C_.Data;
-using UMKM_C_.IRepository.Repository;
-using UMKM_C_.Middleware;
-using UMKM_C_.Repository;
-using UMKM_C_.Services;
+using UMKM.Data;
+using UMKM.IRepository.Repository;
+using UMKM.Middleware;
+using UMKM.Repository;
+using UMKM.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");

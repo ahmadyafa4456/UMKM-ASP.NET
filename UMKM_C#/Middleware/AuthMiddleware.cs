@@ -1,4 +1,4 @@
-namespace UMKM_C_.Middleware
+namespace UMKM.Middleware
 {
     public class AuthMiddleware
     {

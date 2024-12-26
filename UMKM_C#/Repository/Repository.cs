@@ -1,9 +1,9 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using UMKM_C_.Data;
-using UMKM_C_.IRepository.Repository;
+using UMKM.Data;
+using UMKM.IRepository.Repository;
 
-namespace UMKM_C_.Repository
+namespace UMKM.Repository
 {
     public class Repository<T> : IRepository<T> where T : class
     {

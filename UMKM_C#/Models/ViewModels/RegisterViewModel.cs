@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace UMKM_C_.ViewModels.Models
+namespace UMKM.ViewModels.Models
 {
     public class RegisterViewModel
     {

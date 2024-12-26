@@ -1,6 +1,6 @@
-using UMKM_C_.Models;
+using UMKM.Models;
 
-namespace UMKM_C_.IRepository.Repository
+namespace UMKM.IRepository.Repository
 {
     public interface IPengeluaranRepository : IRepository<Pengeluaran_harian>
     {

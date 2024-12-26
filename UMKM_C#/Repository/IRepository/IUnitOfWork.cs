@@ -1,4 +1,4 @@
-namespace UMKM_C_.IRepository.Repository
+namespace UMKM.IRepository.Repository
 {
     public interface IUnitOfWork
     {

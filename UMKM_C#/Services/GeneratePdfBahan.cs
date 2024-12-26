@@ -3,9 +3,9 @@ using QuestPDF.Companion;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using UMKM_C_.Models;
+using UMKM.Models;
 
-namespace UMKM_C_.Services
+namespace UMKM.Services
 {
     public class GeneratePdfBahan
     {

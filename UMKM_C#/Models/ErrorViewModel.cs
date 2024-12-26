@@ -1,4 +1,4 @@
-namespace UMKM_C_.Models
+namespace UMKM.Models
 {
     public class ErrorViewModel
     {

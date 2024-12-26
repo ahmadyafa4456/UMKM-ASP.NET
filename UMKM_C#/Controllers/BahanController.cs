@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using System.Text;
-using UMKM_C_.Data;
-using UMKM_C_.IRepository.Repository;
-using UMKM_C_.Models;
-using UMKM_C_.Models.ViewModels;
-using UMKM_C_.Services;
+using UMKM.Data;
+using UMKM.IRepository.Repository;
+using UMKM.Models;
+using UMKM.Models.ViewModels;
+using UMKM.Services;
 
-namespace UMKM_C_.Controllers
+namespace UMKM.Controllers
 {
     [Authorize]
     public class BahanController : Controller

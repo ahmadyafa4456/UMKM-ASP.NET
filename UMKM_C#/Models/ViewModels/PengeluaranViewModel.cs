@@ -1,4 +1,4 @@
-﻿namespace UMKM_C_.Models.ViewModels
+﻿namespace UMKM.Models.ViewModels
 {
     public class PengeluaranViewModel
     {

@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using UMKM_C_.Models;
+using UMKM.Models;
 
-namespace UMKM_C_.Controllers
+namespace UMKM.Controllers
 {
     [Authorize]
     public class HomeController : Controller

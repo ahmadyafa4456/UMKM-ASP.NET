@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
-namespace UMKM_C_.Models
+namespace UMKM.Models
 {
     public class Pemasukan_bulanan
     {

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace UMKM_C_.Migrations
+namespace UMKM.Migrations
 {
     /// <inheritdoc />
     public partial class Identity : Migration

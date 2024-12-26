@@ -1,7 +1,7 @@
 using OfficeOpenXml;
-using UMKM_C_.Models;
+using UMKM.Models;
 
-namespace UMKM_C_.Services
+namespace UMKM.Services
 {
     public class GenerateExcelBahan
     {
