@@ -90,8 +90,13 @@ namespace UMKM.Controllers
                     MissingFieldFound = null,
                     IgnoreBlankLines = false
                 });
-                var record = csv.GetRecords<Pengeluaran_harian>().ToList();
-                await db.Pengeluaran.AddPengeluaran(record);
+                var record = csv.GetRecords<ImportPengeluaran>().ToList();
+                var data = new PengeluaranVM
+                {
+                    harian = record.Select(p => new Pengeluaran_harian { Nama = p.Nama, Jumlah = p.Jumlah, Harga = p.Harga, Created_at = DateTime.Now.ToString("yyyy-MM-dd") }).ToList(),
+                    bulan = record.Select(p => p.Bulan).ToList()
+                };
+                await db.Pengeluaran.AddImportPengeluaran(data);
                 return RedirectToAction("PengeluaranBulanan");
             }
             else
@@ -115,6 +120,22 @@ namespace UMKM.Controllers
             List<Pengeluaran_bulanan> bulanan = await data.ToListAsync();
             var file = generate.pdfPengeluaran.GeneratePengeluaran(bulanan);
             return File(file, "Application/pdf", "Pengeluaran.pdf");
+        }
+
+        public async Task<IActionResult> displayData()
+        {
+            IQueryable<Pengeluaran_bulanan> data = db.Pengeluaran.GetPengeluaranBulanan();
+            var pengeluaran = await data
+                .GroupBy(p => p.Bulan)
+
+                .Select(g => new
+                {
+                    Bulan = g.Key,
+                    Total = g.Sum(p => p.Pengeluaran_harian.Harga)
+                })
+                .Distinct()
+                .ToListAsync();
+            return Ok(pengeluaran);
         }
     }
 }

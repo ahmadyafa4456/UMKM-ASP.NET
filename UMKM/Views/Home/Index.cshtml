@@ -7,16 +7,16 @@
     <div class="col-sm-6 col-md-3">
         <div class="card card-stats card-round">
             <div class="card-body">
-                <div class="row">
-                    <div class="col-5">
-                        <div class="icon-big text-center">
-                            <i class="icon-pie-chart text-warning"></i>
+                <div class="row align-items-center">
+                    <div class="col-icon">
+                        <div class="icon-big text-center icon-primary bubble-shadow-small">
+                            <i class="fas fa-box"></i>
                         </div>
                     </div>
-                    <div class="col-7 col-stats">
+                    <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
-                            <p class="card-category">Number</p>
-                            <h4 class="card-title">150GB</h4>
+                            <p class="card-category">Bahan</p>
+                            <h4 class="card-title">1,294</h4>
                         </div>
                     </div>
                 </div>
@@ -26,15 +26,35 @@
     <div class="col-sm-6 col-md-3">
         <div class="card card-stats card-round">
             <div class="card-body">
-                <div class="row">
-                    <div class="col-5">
-                        <div class="icon-big text-center">
-                            <i class="icon-wallet text-success"></i>
+                <div class="row align-items-center">
+                    <div class="col-icon">
+                        <div class="icon-big text-center icon-primary bubble-shadow-small">
+                            <i class="fas fa-money-bill-wave
+"></i>
                         </div>
                     </div>
-                    <div class="col-7 col-stats">
+                    <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
-                            <p class="card-category">Revenue</p>
+                            <p class="card-category">Pemasukan</p>
+                            <h4 class="card-title">1303</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <div class="card card-stats card-round">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-icon">
+                        <div class="icon-big text-center icon-primary bubble-shadow-small">
+                            <i class="fas fa-shopping-bag"></i>
+                        </div>
+                    </div>
+                    <div class="col col-stats ms-3 ms-sm-0">
+                        <div class="numbers">
+                            <p class="card-category">Pengeluaran</p>
                             <h4 class="card-title">$ 1,345</h4>
                         </div>
                     </div>
@@ -42,42 +62,109 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-6 col-md-3">
-        <div class="card card-stats card-round">
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Pemasukan Chart</div>
+            </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-5">
-                        <div class="icon-big text-center">
-                            <i class="icon-close text-danger"></i>
-                        </div>
-                    </div>
-                    <div class="col-7 col-stats">
-                        <div class="numbers">
-                            <p class="card-category">Errors</p>
-                            <h4 class="card-title">23</h4>
-                        </div>
-                    </div>
+                <div class="chart-container">
+                    <canvas id="barChart"></canvas>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-sm-6 col-md-3">
-        <div class="card card-stats card-round">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Pengeluaran Chart</div>
+            </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-5">
-                        <div class="icon-big text-center">
-                            <i class="icon-social-twitter text-primary"></i>
-                        </div>
-                    </div>
-                    <div class="col-7 col-stats">
-                        <div class="numbers">
-                            <p class="card-category">Followers</p>
-                            <h4 class="card-title">+45K</h4>
-                        </div>
-                    </div>
+                <div class="chart-container">
+                    <canvas id="barChart2" width="800" height="400"></canvas>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const response = await fetch("/Pengeluaran/displayData");
+        const pengeluaranData = await response.json();
+        const labelPengeluaran = pengeluaranData.map(item => item.bulan);
+        const totalPengeluaran = pengeluaranData.map(item => item.total);
+
+        const barChart = document.getElementById("barChart").getContext("2d");
+        var myBarChart = new Chart(barChart, {
+            type: "bar",
+            data: {
+                labels: [
+                    "Januari",
+                    "Febuari",
+                    "Maret",
+                    "April",
+                    "Mei",
+                    "Juni",
+                    "Juli",
+                    "Augustus",
+                    "September",
+                    "Oktober",
+                    "November",
+                    "Desember",
+                ],
+                datasets: [
+                    {
+                        label: "Pemasukan",
+                        backgroundColor: "rgb(23, 125, 255)",
+                        borderColor: "rgb(23, 125, 255)",
+                        data: [3, 2, 9, 5, 4, 6, 4, 6, 7, 8, 7, 4],
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [
+                        {
+                            ticks: {
+                                beginAtZero: true,
+                            },
+                        },
+                    ],
+                },
+            },
+        });
+        const barChart2 = document.getElementById("barChart2").getContext("2d");
+        var myBarChart2 = new Chart(barChart2, {
+            type: "bar",
+            data: {
+                labels: labelPengeluaran,
+                datasets: [
+                    {
+                        label: "Pengeluaran",
+                        backgroundColor: "rgb(23, 125, 255)",
+                        borderColor: "rgb(23, 125, 255)",
+                        data: totalPengeluaran,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [
+                        {
+                            ticks: {
+                                beginAtZero: true,
+                            },
+                        },
+                    ],
+                },
+            },
+        });
+    })
+</script>

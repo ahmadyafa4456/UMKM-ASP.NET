@@ -1,7 +1,9 @@
+using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using UMKM.Data;
 using UMKM.IRepository.Repository;
 using UMKM.Models;
+using UMKM.Models.ViewModels;
 
 namespace UMKM.Repository
 {
@@ -19,31 +21,10 @@ namespace UMKM.Repository
             db.Update(obj);
         }
 
-        public async Task AddPengeluaranBulanan(int id)
+        public async Task AddPengeluaranBulanan(IEnumerable<Pengeluaran_bulanan> data)
         {
-            Pengeluaran_bulanan bulanan = new Pengeluaran_bulanan
-            {
-                HarianId = id,
-                Bulan = DateTime.UtcNow.Month
-            };
-            await dbSetBulanan.AddAsync(bulanan);
-            await db.SaveChangesAsync();
+            await dbSetBulanan.AddRangeAsync(data);
         }
-
-        // public async Task AddImportPengeluaran(List<Pengeluaran_harian> data)
-        // {
-        //     try
-        //     {
-        //         await db.Database.BeginTransactionAsync();
-        //         foreach(var i in data)
-        //         {
-        //             i.Created_at = DateTime.Now.ToString(format: "yyyy-MM-dd");
-        //             await db.AddAsync(i);
-        //             await db.SaveChangesAsync();
-        //             await AddPengeluaranBulanan()
-        //         }
-        //     }
-        // }
 
         public async Task AddPengeluaran(List<Pengeluaran_harian> data)
         {
@@ -53,10 +34,44 @@ namespace UMKM.Repository
                 foreach (var i in data)
                 {
                     i.Created_at = DateTime.Now.ToString(format: "yyyy-MM-dd");
-                    await db.AddAsync(i);
-                    await db.SaveChangesAsync();
-                    await AddPengeluaranBulanan(i.Id);
                 }
+                await db.AddRangeAsync(data);
+                await db.SaveChangesAsync();
+                var bulanan = data.Select(i => new Pengeluaran_bulanan
+                {
+                    HarianId = i.Id,
+                    Bulan = DateTime.UtcNow.ToString("MMMM", new CultureInfo("id-ID"))
+                }).ToList();
+                await AddPengeluaranBulanan(bulanan);
+                await db.SaveChangesAsync();
+                await db.Database.CommitTransactionAsync();
+            }
+            catch (Exception)
+            {
+                await db.Database.RollbackTransactionAsync();
+                throw;
+            }
+        }
+
+        public async Task AddImportPengeluaranBulanan(IEnumerable<Pengeluaran_bulanan> data)
+        {
+            await dbSetBulanan.AddRangeAsync(data);
+        }
+
+        public async Task AddImportPengeluaran(PengeluaranVM data)
+        {
+            try
+            {
+                await db.Database.BeginTransactionAsync();
+                await db.AddRangeAsync(data.harian);
+                await db.SaveChangesAsync();
+                var bulanan = data.harian.Select((harian, index) => new Pengeluaran_bulanan
+                {
+                    HarianId = harian.Id,
+                    Bulan = data.bulan[index]
+                }).ToList();
+                await AddImportPengeluaranBulanan(bulanan);
+                await db.SaveChangesAsync();
                 await db.Database.CommitTransactionAsync();
             }
             catch (Exception)
