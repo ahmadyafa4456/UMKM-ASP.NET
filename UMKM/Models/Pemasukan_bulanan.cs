@@ -8,6 +8,6 @@ namespace UMKM.Models
         [ValidateNever]
         public Pemasukan_harian Pemasukan_harian { get; set; }
         public int HarianId { get; set; }
-        public int Bulan { get; set; }
+        public string Bulan { get; set; }
     }
 }

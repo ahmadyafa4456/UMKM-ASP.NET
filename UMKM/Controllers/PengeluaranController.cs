@@ -122,12 +122,11 @@ namespace UMKM.Controllers
             return File(file, "Application/pdf", "Pengeluaran.pdf");
         }
 
-        public async Task<IActionResult> displayData()
+        public async Task<IActionResult> DisplayData()
         {
             IQueryable<Pengeluaran_bulanan> data = db.Pengeluaran.GetPengeluaranBulanan();
             var pengeluaran = await data
                 .GroupBy(p => p.Bulan)
-
                 .Select(g => new
                 {
                     Bulan = g.Key,

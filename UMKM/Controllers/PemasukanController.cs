@@ -71,7 +71,6 @@ namespace UMKM.Controllers
 
         public async Task<IActionResult> PemasukanBulanan(string date, int pg = 1)
         {
-            var month = DateTime.Now.Month;
             IQueryable<Pemasukan_bulanan> bulanan = pemasukanRepo.Pemasukan.GetAllPemasukanBulanan();
             if (!string.IsNullOrEmpty(date))
             {
@@ -94,9 +93,8 @@ namespace UMKM.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPemasukanBulanan()
         {
-            var month = DateTime.Now.Month;
             IQueryable<Pemasukan_bulanan> bulanan = pemasukanRepo.Pemasukan.GetAllPemasukanBulanan();
-            var pemasukanBulanan = await bulanan.Where(p => p.Bulan == month).Select(p => new { p.Pemasukan_harian.Total, p.Pemasukan_harian.Created_at }).ToListAsync();
+            var pemasukanBulanan = await bulanan.Select(p => new { p.Pemasukan_harian.Total, p.Pemasukan_harian.Created_at }).ToListAsync();
             var total = pemasukanBulanan.Sum(p => p.Total);
             return Json(new
             {
@@ -147,8 +145,13 @@ namespace UMKM.Controllers
                     MissingFieldFound = null,
                     IgnoreBlankLines = false
                 });
-                var record = csv.GetRecords<Pemasukan_harian>().ToList();
-                await pemasukanRepo.Pemasukan.AddImportPemasukan(record);
+                var record = csv.GetRecords<ImportPemasukan>().ToList();
+                var data = new PemasukanVM
+                {
+                    Harian = record.Select(p => new Pemasukan_harian { Created_at = p.Created_at, Total = p.Total }).ToList(),
+                    Bulan = record.Select(p => p.Bulan).ToList()
+                };
+                await pemasukanRepo.Pemasukan.AddImportPemasukan(data);
                 return RedirectToAction("PemasukanBulanan");
             }
             else
@@ -156,6 +159,21 @@ namespace UMKM.Controllers
                 ModelState.AddModelError("File", "file tidak boleh kosong");
             }
             return View();
+        }
+
+        public async Task<IActionResult> DisplayData()
+        {
+            IQueryable<Pemasukan_bulanan> data = pemasukanRepo.Pemasukan.GetAllPemasukanBulanan();
+            var pemasukan = await data
+                    .GroupBy(p => p.Bulan)
+                    .Select(g => new
+                    {
+                        bulan = g.Key,
+                        total = g.Sum(g => g.Pemasukan_harian.Total)
+                    })
+                    .Distinct()
+                    .ToListAsync();
+            return Ok(pemasukan);
         }
     }
 }

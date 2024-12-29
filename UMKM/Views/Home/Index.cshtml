@@ -92,35 +92,27 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", async () => {
-        const response = await fetch("/Pengeluaran/displayData");
+        const response = await fetch("/Pengeluaran/DisplayData");
         const pengeluaranData = await response.json();
         const labelPengeluaran = pengeluaranData.map(item => item.bulan);
         const totalPengeluaran = pengeluaranData.map(item => item.total);
+
+        const response2 = await fetch("/Pemasukan/DisplayData");
+        const pemasukanData = await response2.json();
+        const labelPemasukan = pemasukanData.map(item => item.bulan);
+        const totalPemasukan = pemasukanData.map(item => item.total);
 
         const barChart = document.getElementById("barChart").getContext("2d");
         var myBarChart = new Chart(barChart, {
             type: "bar",
             data: {
-                labels: [
-                    "Januari",
-                    "Febuari",
-                    "Maret",
-                    "April",
-                    "Mei",
-                    "Juni",
-                    "Juli",
-                    "Augustus",
-                    "September",
-                    "Oktober",
-                    "November",
-                    "Desember",
-                ],
+                labels: labelPemasukan,
                 datasets: [
                     {
                         label: "Pemasukan",
                         backgroundColor: "rgb(23, 125, 255)",
                         borderColor: "rgb(23, 125, 255)",
-                        data: [3, 2, 9, 5, 4, 6, 4, 6, 7, 8, 7, 4],
+                        data: totalPemasukan,
                     },
                 ],
             },

@@ -68,7 +68,7 @@
                                     @foreach (var i in Model.Pemasukan_bulanan)
                                     {
                                         <tr>
-                                            <td>@i.Pemasukan_harian.Total</td>
+                                            <td>Rp. @i.Pemasukan_harian.Total.ToString("N0")</td>
                                             <td>@i.Pemasukan_harian.Created_at</td>
                                         </tr>
                                     }
@@ -150,7 +150,7 @@
         });
     });
     flatpickr("#customDateInput", {
-        dateFormat: "Y-m-d",
+        dateFormat: "d-m-Y",
         placeholder: ""
     });
 </script>
