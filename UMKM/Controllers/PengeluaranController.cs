@@ -93,7 +93,7 @@ namespace UMKM.Controllers
                 var record = csv.GetRecords<ImportPengeluaran>().ToList();
                 var data = new PengeluaranVM
                 {
-                    harian = record.Select(p => new Pengeluaran_harian { Nama = p.Nama, Jumlah = p.Jumlah, Harga = p.Harga, Created_at = DateTime.Now.ToString("yyyy-MM-dd") }).ToList(),
+                    harian = record.Select(p => new Pengeluaran_harian { Nama = p.Nama, Jumlah = p.Jumlah, Harga = p.Harga, Created_at = p.Tanggal }).ToList(),
                     bulan = record.Select(p => p.Bulan).ToList()
                 };
                 await db.Pengeluaran.AddImportPengeluaran(data);

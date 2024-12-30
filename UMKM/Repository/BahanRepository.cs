@@ -16,5 +16,10 @@ namespace UMKM.Repository
         {
             _db.Update(obj);
         }
+
+        public async Task AddBahan(IEnumerable<Bahan> data)
+        {
+            await _db.AddRangeAsync(data);
+        }
     }
 }

@@ -2,7 +2,7 @@
     ViewData["Title"] = "Dashboard";
     ViewData["Header"] = "Dashboard";
 }
-
+@model HomeVM
 <div class="row">
     <div class="col-sm-6 col-md-3">
         <div class="card card-stats card-round">
@@ -16,14 +16,14 @@
                     <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
                             <p class="card-category">Bahan</p>
-                            <h4 class="card-title">1,294</h4>
+                            <h4 class="card-title">@Model.TotalBahan</h4>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-sm-6 col-md-3">
+    <div class="col-sm-6 col-md-4">
         <div class="card card-stats card-round">
             <div class="card-body">
                 <div class="row align-items-center">
@@ -36,14 +36,14 @@
                     <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
                             <p class="card-category">Pemasukan</p>
-                            <h4 class="card-title">1303</h4>
+                            <h4 class="card-title">Rp. @Model.TotalPemasukan.ToString("N0")</h4>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-sm-6 col-md-3">
+    <div class="col-sm-6 col-md-4">
         <div class="card card-stats card-round">
             <div class="card-body">
                 <div class="row align-items-center">
@@ -55,7 +55,7 @@
                     <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
                             <p class="card-category">Pengeluaran</p>
-                            <h4 class="card-title">$ 1,345</h4>
+                            <h4 class="card-title">Rp. @Model.TotalPengeluaran.ToString("N0")</h4>
                         </div>
                     </div>
                 </div>

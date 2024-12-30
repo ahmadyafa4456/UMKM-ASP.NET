@@ -5,5 +5,6 @@ namespace UMKM.IRepository.Repository
     public interface IBahanRepsitory : IRepository<Bahan>
     {
         void Update(Bahan obj);
+        Task AddBahan(IEnumerable<Bahan> data);
     }
 }

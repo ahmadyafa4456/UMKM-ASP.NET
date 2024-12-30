@@ -6,5 +6,6 @@ namespace UMKM.Models.ViewModels
         public int Jumlah { get; set; }
         public int Harga { get; set; }
         public string Bulan { get; set; }
+        public string Tanggal { get; set; }
     }
 }

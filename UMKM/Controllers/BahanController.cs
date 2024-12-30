@@ -64,11 +64,14 @@ namespace UMKM.Controllers
         {
             if (ModelState.IsValid)
             {
-                foreach (var bahan in model.Bahan)
+                var bahan = model.Bahan.Select(p => new Bahan
                 {
-                    bahan.created_at = DateTime.Now.ToString("yyyy-M-dd");
-                    await bahanRepo.Bahan.Add(bahan);
-                }
+                    nama = p.nama,
+                    jumlah = p.jumlah,
+                    harga = p.harga,
+                    created_at = DateTime.Now.ToString("yyyy-M-dd")
+                }).ToList();
+                await bahanRepo.Bahan.AddBahan(bahan);
                 await bahanRepo.Save();
                 TempData["SuccessCreate"] = "data berhasil dibuat";
                 return RedirectToAction("Index");
