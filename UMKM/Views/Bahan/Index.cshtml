@@ -5,14 +5,14 @@
     {
         <script>
             swal({
-            title: "Success!",
-            text: "",
-            type: "success",
-            buttons: {
-            confirm: {
-            className: "btn btn-success",
-            },
-            },
+                title: "Success!",
+                text: "",
+                type: "success",
+                buttons: {
+                    confirm: {
+                        className: "btn btn-success",
+                    },
+                },
             });
         </script>
     }
@@ -32,7 +32,7 @@
                 <a asp-controller="bahan" asp-action="tambah" class="btn btn-primary rounded">
                     <i class="fa fa-plus"></i>
                     Tambah Bahan
-                </a> 
+                </a>
                 <a asp-controller="bahan" asp-action="ImportBahan" class="btn btn-secondary rounded ms-2">
                     <i class="fa-solid fa-upload me-2"></i>
                     Import
@@ -47,7 +47,8 @@
                             <button class="btn-export rounded-start-2" id="exports" type="button">
                                 Export
                             </button>
-                            <a asp-controller="bahan" asp-action="index" class="btn-export rounded-end-2 d-flex align-items-center">
+                            <a asp-controller="bahan" asp-action="index"
+                                class="btn-export rounded-end-2 d-flex align-items-center">
                                 <i class="fa-solid fa-arrows-rotate"></i>
                             </a>
                         </div>
@@ -63,9 +64,7 @@
                         </div>
                         <form asp-action="Index" method="get">
                             <div class="d-flex justify-content-start">
-                                <input type="text"
-                                       name="input"
-                                       class="form-control input" />
+                                <input type="text" name="input" class="form-control input" />
                                 <button type="submit" class="bg-primary btn-search">
                                     <i class="fa-solid fa-magnifying-glass"></i>
                                 </button>
@@ -98,7 +97,8 @@
                                                     <a href="/bahan/edit/@i.Id" class="btn btn-link btn-primary btn-lg">
                                                         <i class="fa fa-edit"></i>
                                                     </a>
-                                                    <button type="button" class="btn btn-link btn-danger" onclick="deleteBahan(@i.Id)">
+                                                    <button type="button" class="btn btn-link btn-danger"
+                                                        onclick="deleteBahan(@i.Id)">
                                                         <i class="fa fa-times"></i>
                                                     </button>
                                                 </div>
@@ -126,22 +126,26 @@
                                     <a class="page-link" asp-controller="Bahan" asp-action="Index" asp-route-pg="1">First</a>
                                 </li>
                                 <li class="page-item">
-                                    <a class="page-link" asp-controller="Bahan" asp-action="Index" asp-route-pg="@(pager.CurrentPage - 1)">Previous</a>
+                                    <a class="page-link" asp-controller="Bahan" asp-action="Index"
+                                        asp-route-pg="@(pager.CurrentPage - 1)">Previous</a>
                                 </li>
                             }
                             @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
                             {
                                 <li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
-                                    <a class="page-link @(pge == pager.CurrentPage ? "text-white" : "")" asp-controller="Bahan" asp-action="Index" asp-route-pg="@pge">@pge</a>
+                                    <a class="page-link @(pge == pager.CurrentPage ? "text-white" : "")" asp-controller="Bahan"
+                                        asp-action="Index" asp-route-pg="@pge">@pge</a>
                                 </li>
                             }
                             @if (pager.CurrentPage < pager.TotalPages)
                             {
                                 <li class="page-item">
-                                    <a class="page-link" asp-controller="Bahan" asp-action="Index" asp-route-pg="@(pager.CurrentPage + 1)">Next</a>
+                                    <a class="page-link" asp-controller="Bahan" asp-action="Index"
+                                        asp-route-pg="@(pager.CurrentPage + 1)">Next</a>
                                 </li>
                                 <li class="page-item">
-                                    <a class="page-link" asp-controller="Bahan" asp-action="Index" asp-route-pg="@(pager.TotalPages)">Last</a>
+                                    <a class="page-link" asp-controller="Bahan" asp-action="Index"
+                                        asp-route-pg="@(pager.TotalPages)">Last</a>
                                 </li>
                             }
                         </ul>
@@ -153,26 +157,26 @@
 </div>
 
 <script>
-        document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", () => {
         const modal = document.getElementById("modal");
         const exports = document.getElementById("exports");
 
         exports.addEventListener("click", () => {
             if (modal.style.display === "block") {
-              modal.style.display = "none";
-              modal.style.opacity = "1";
+                modal.style.display = "none";
+                modal.style.opacity = "1";
             } else {
-              modal.style.display = "block";
-              modal.style.opacity = "1";
+                modal.style.display = "block";
+                modal.style.opacity = "1";
             }
         });
 
         document.addEventListener("click", (event) => {
             if (!modal.contains(event.target) && event.target !== exports) {
-              if (modal.style.display === "block") {
-                modal.style.display = "none";
-                modal.style.opacity = "1";
-              }
+                if (modal.style.display === "block") {
+                    modal.style.display = "none";
+                    modal.style.opacity = "1";
+                }
             }
         });
     });
@@ -196,7 +200,7 @@
             if (willDelete) {
                 // Lakukan permintaan AJAX untuk menghapus data
                 $.ajax({
-                    url: `https://localhost:7226/bahan/delete/${id}`, // URL endpoint dengan ID
+                    url: `http://localhost:5028/bahan/delete/${id}`, // URL endpoint dengan ID
                     type: "DELETE",
                     success: function (response) {
                         // Jika berhasil
